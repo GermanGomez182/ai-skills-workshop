@@ -1,0 +1,504 @@
+{
+  "_label": "SYNTHETIC DEMO DATA - generated for the AI Skills workshop, not real Garmin data",
+  "generated_for": "AI Skills Workshop",
+  "schema_notes": {
+    "training_load": "arbitrary Garmin-style load units, higher = more strain",
+    "sleep_duration_min": "minutes",
+    "hrv": "milliseconds, overnight average",
+    "body_battery_min/max": "0-100 scale",
+    "training_readiness": "0-100 scale, higher = more ready",
+    "missing_values": "null means the metric was not available for that day, on purpose"
+  },
+  "weeks": [
+    {
+      "week_start": "2026-08-17",
+      "week_end": "2026-08-23",
+      "days": [
+        {
+          "date": "2026-08-17",
+          "activities": [],
+          "resting_hr": 51,
+          "avg_hr": null,
+          "hrv": 64,
+          "sleep_duration_min": 414,
+          "sleep_score": 76,
+          "stress_avg": 31,
+          "body_battery_max": 89,
+          "body_battery_min": 26,
+          "training_readiness": 71
+        },
+        {
+          "date": "2026-08-18",
+          "activities": [
+            {
+              "type": "swim",
+              "duration_min": 47,
+              "training_load": 95
+            }
+          ],
+          "resting_hr": 50,
+          "avg_hr": 69,
+          "hrv": 69,
+          "sleep_duration_min": 424,
+          "sleep_score": 81,
+          "stress_avg": 31,
+          "body_battery_max": 88,
+          "body_battery_min": 24,
+          "training_readiness": 72
+        },
+        {
+          "date": "2026-08-19",
+          "activities": [],
+          "resting_hr": 52,
+          "avg_hr": null,
+          "hrv": 70,
+          "sleep_duration_min": 410,
+          "sleep_score": 78,
+          "stress_avg": 27,
+          "body_battery_max": 86,
+          "body_battery_min": 26,
+          "training_readiness": 71
+        },
+        {
+          "date": "2026-08-20",
+          "activities": [
+            {
+              "type": "swim",
+              "duration_min": 53,
+              "training_load": 110
+            }
+          ],
+          "resting_hr": 52,
+          "avg_hr": 72,
+          "hrv": 70,
+          "sleep_duration_min": 430,
+          "sleep_score": 79,
+          "stress_avg": 33,
+          "body_battery_max": 87,
+          "body_battery_min": 24,
+          "training_readiness": 77
+        },
+        {
+          "date": "2026-08-21",
+          "activities": [
+            {
+              "type": "strength",
+              "duration_min": 26,
+              "training_load": 60
+            }
+          ],
+          "resting_hr": 52,
+          "avg_hr": 67,
+          "hrv": 66,
+          "sleep_duration_min": 414,
+          "sleep_score": 75,
+          "stress_avg": 27,
+          "body_battery_max": 86,
+          "body_battery_min": 23,
+          "training_readiness": 75
+        },
+        {
+          "date": "2026-08-22",
+          "activities": [],
+          "resting_hr": 51,
+          "avg_hr": null,
+          "hrv": 67,
+          "sleep_duration_min": 412,
+          "sleep_score": 77,
+          "stress_avg": 32,
+          "body_battery_max": 89,
+          "body_battery_min": 25,
+          "training_readiness": 71
+        },
+        {
+          "date": "2026-08-23",
+          "activities": [
+            {
+              "type": "bike",
+              "duration_min": 67,
+              "training_load": 140
+            }
+          ],
+          "resting_hr": 51,
+          "avg_hr": 75,
+          "hrv": 69,
+          "sleep_duration_min": 424,
+          "sleep_score": 81,
+          "stress_avg": 32,
+          "body_battery_max": 90,
+          "body_battery_min": 22,
+          "training_readiness": 70
+        }
+      ]
+    },
+    {
+      "week_start": "2026-08-24",
+      "week_end": "2026-08-30",
+      "days": [
+        {
+          "date": "2026-08-24",
+          "activities": [],
+          "resting_hr": 51,
+          "avg_hr": null,
+          "hrv": 64,
+          "sleep_duration_min": 408,
+          "sleep_score": 81,
+          "stress_avg": 34,
+          "body_battery_max": 85,
+          "body_battery_min": 24,
+          "training_readiness": 72
+        },
+        {
+          "date": "2026-08-25",
+          "activities": [
+            {
+              "type": "swim",
+              "duration_min": 48,
+              "training_load": 100
+            }
+          ],
+          "resting_hr": 51,
+          "avg_hr": 74,
+          "hrv": 66,
+          "sleep_duration_min": 427,
+          "sleep_score": 76,
+          "stress_avg": 32,
+          "body_battery_max": 85,
+          "body_battery_min": 26,
+          "training_readiness": 70
+        },
+        {
+          "date": "2026-08-26",
+          "activities": [
+            {
+              "type": "swim",
+              "duration_min": 27,
+              "training_load": 55
+            }
+          ],
+          "resting_hr": 51,
+          "avg_hr": 69,
+          "hrv": 67,
+          "sleep_duration_min": 429,
+          "sleep_score": 76,
+          "stress_avg": 28,
+          "body_battery_max": 85,
+          "body_battery_min": 26,
+          "training_readiness": 73
+        },
+        {
+          "date": "2026-08-27",
+          "activities": [],
+          "resting_hr": 53,
+          "avg_hr": null,
+          "hrv": 69,
+          "sleep_duration_min": 400,
+          "sleep_score": 79,
+          "stress_avg": 32,
+          "body_battery_max": 86,
+          "body_battery_min": 22,
+          "training_readiness": 74
+        },
+        {
+          "date": "2026-08-28",
+          "activities": [
+            {
+              "type": "run",
+              "duration_min": 53,
+              "training_load": 115
+            }
+          ],
+          "resting_hr": 51,
+          "avg_hr": 68,
+          "hrv": 68,
+          "sleep_duration_min": 426,
+          "sleep_score": 82,
+          "stress_avg": 33,
+          "body_battery_max": 86,
+          "body_battery_min": 21,
+          "training_readiness": 74
+        },
+        {
+          "date": "2026-08-29",
+          "activities": [],
+          "resting_hr": 53,
+          "avg_hr": null,
+          "hrv": 66,
+          "sleep_duration_min": 407,
+          "sleep_score": 76,
+          "stress_avg": 28,
+          "body_battery_max": 89,
+          "body_battery_min": 26,
+          "training_readiness": 76
+        },
+        {
+          "date": "2026-08-30",
+          "activities": [
+            {
+              "type": "run",
+              "duration_min": 64,
+              "training_load": 150
+            }
+          ],
+          "resting_hr": 52,
+          "avg_hr": 69,
+          "hrv": 65,
+          "sleep_duration_min": 435,
+          "sleep_score": 80,
+          "stress_avg": 29,
+          "body_battery_max": 84,
+          "body_battery_min": 23,
+          "training_readiness": 70
+        }
+      ]
+    },
+    {
+      "week_start": "2026-08-31",
+      "week_end": "2026-09-06",
+      "days": [
+        {
+          "date": "2026-08-31",
+          "activities": [],
+          "resting_hr": 54,
+          "avg_hr": null,
+          "hrv": 66,
+          "sleep_duration_min": 442,
+          "sleep_score": 78,
+          "stress_avg": 30,
+          "body_battery_max": 85,
+          "body_battery_min": 25,
+          "training_readiness": 67
+        },
+        {
+          "date": "2026-09-01",
+          "activities": [
+            {
+              "type": "swim",
+              "duration_min": 47,
+              "training_load": 120
+            }
+          ],
+          "resting_hr": 54,
+          "avg_hr": 75,
+          "hrv": 65,
+          "sleep_duration_min": 433,
+          "sleep_score": 77,
+          "stress_avg": 34,
+          "body_battery_max": 83,
+          "body_battery_min": 24,
+          "training_readiness": 70
+        },
+        {
+          "date": "2026-09-02",
+          "activities": [
+            {
+              "type": "bike",
+              "duration_min": 28,
+              "training_load": 60
+            }
+          ],
+          "resting_hr": 53,
+          "avg_hr": 74,
+          "hrv": 61,
+          "sleep_duration_min": 415,
+          "sleep_score": 74,
+          "stress_avg": 34,
+          "body_battery_max": 82,
+          "body_battery_min": 24,
+          "training_readiness": 73
+        },
+        {
+          "date": "2026-09-03",
+          "activities": [
+            {
+              "type": "run",
+              "duration_min": 56,
+              "training_load": 130
+            }
+          ],
+          "resting_hr": 52,
+          "avg_hr": 73,
+          "hrv": 63,
+          "sleep_duration_min": 433,
+          "sleep_score": 82,
+          "stress_avg": 34,
+          "body_battery_max": 82,
+          "body_battery_min": 22,
+          "training_readiness": 69
+        },
+        {
+          "date": "2026-09-04",
+          "activities": [],
+          "resting_hr": 52,
+          "avg_hr": null,
+          "hrv": 64,
+          "sleep_duration_min": 420,
+          "sleep_score": 77,
+          "stress_avg": 36,
+          "body_battery_max": 81,
+          "body_battery_min": 23,
+          "training_readiness": 71
+        },
+        {
+          "date": "2026-09-05",
+          "activities": [],
+          "resting_hr": 52,
+          "avg_hr": null,
+          "hrv": 65,
+          "sleep_duration_min": 436,
+          "sleep_score": 74,
+          "stress_avg": 31,
+          "body_battery_max": 84,
+          "body_battery_min": 20,
+          "training_readiness": 67
+        },
+        {
+          "date": "2026-09-06",
+          "activities": [
+            {
+              "type": "run",
+              "duration_min": 92,
+              "training_load": 210
+            }
+          ],
+          "resting_hr": 54,
+          "avg_hr": 70,
+          "hrv": 65,
+          "sleep_duration_min": 438,
+          "sleep_score": 74,
+          "stress_avg": 34,
+          "body_battery_max": 84,
+          "body_battery_min": 19,
+          "training_readiness": 67
+        }
+      ]
+    },
+    {
+      "week_start": "2026-09-07",
+      "week_end": "2026-09-13",
+      "days": [
+        {
+          "date": "2026-09-07",
+          "activities": [
+            {
+              "type": "bike",
+              "duration_min": 19,
+              "training_load": 40
+            }
+          ],
+          "resting_hr": 56,
+          "avg_hr": 74,
+          "hrv": 58,
+          "sleep_duration_min": 362,
+          "sleep_score": 66,
+          "stress_avg": 45,
+          "body_battery_max": 73,
+          "body_battery_min": 16,
+          "training_readiness": 58
+        },
+        {
+          "date": "2026-09-08",
+          "activities": [
+            {
+              "type": "swim",
+              "duration_min": 56,
+              "training_load": 135
+            }
+          ],
+          "resting_hr": 57,
+          "avg_hr": 78,
+          "hrv": 60,
+          "sleep_duration_min": 378,
+          "sleep_score": 64,
+          "stress_avg": 39,
+          "body_battery_max": 71,
+          "body_battery_min": 15,
+          "training_readiness": 54
+        },
+        {
+          "date": "2026-09-09",
+          "activities": [],
+          "resting_hr": 55,
+          "avg_hr": null,
+          "hrv": 55,
+          "sleep_duration_min": 377,
+          "sleep_score": 71,
+          "stress_avg": 41,
+          "body_battery_max": 71,
+          "body_battery_min": 14,
+          "training_readiness": 61
+        },
+        {
+          "date": "2026-09-10",
+          "activities": [
+            {
+              "type": "run",
+              "duration_min": 62,
+              "training_load": 145
+            }
+          ],
+          "resting_hr": 57,
+          "avg_hr": 74,
+          "hrv": 56,
+          "sleep_duration_min": 392,
+          "sleep_score": 64,
+          "stress_avg": 42,
+          "body_battery_max": 75,
+          "body_battery_min": 14,
+          "training_readiness": 59
+        },
+        {
+          "date": "2026-09-11",
+          "activities": [
+            {
+              "type": "strength",
+              "duration_min": 27,
+              "training_load": 70
+            }
+          ],
+          "resting_hr": 55,
+          "avg_hr": 78,
+          "hrv": 57,
+          "sleep_duration_min": 374,
+          "sleep_score": 69,
+          "stress_avg": 39,
+          "body_battery_max": 73,
+          "body_battery_min": 16,
+          "training_readiness": 55
+        },
+        {
+          "date": "2026-09-12",
+          "activities": [],
+          "resting_hr": 56,
+          "avg_hr": null,
+          "hrv": 63,
+          "sleep_duration_min": 396,
+          "sleep_score": 63,
+          "stress_avg": 39,
+          "body_battery_max": 73,
+          "body_battery_min": 17,
+          "training_readiness": 61
+        },
+        {
+          "date": "2026-09-13",
+          "activities": [
+            {
+              "type": "run",
+              "duration_min": 91,
+              "training_load": 230
+            }
+          ],
+          "resting_hr": 56,
+          "avg_hr": 73,
+          "hrv": 62,
+          "sleep_duration_min": 385,
+          "sleep_score": 68,
+          "stress_avg": 45,
+          "body_battery_max": 75,
+          "body_battery_min": 11,
+          "training_readiness": 61
+        }
+      ]
+    }
+  ]
+}
