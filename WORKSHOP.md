@@ -95,9 +95,17 @@ real data.
 No Skill installed yet.
 
 ```
-$ ls skills/
+$ ./scripts/demo-hide-skill.sh
+```
 
-ls: skills: No such file or directory
+New Claude Code session -- Skills load at session start, not mid-
+conversation. Nothing about *this chat* changes between runs; only
+what's on disk does.
+
+```
+$ ls .claude/skills/
+
+ls: cannot access '.claude/skills/': No such file or directory
 ```
 
 One prompt. Deliberately vague, because that's how real requests
@@ -210,16 +218,22 @@ how we use those tools.
 [04] WITH SKILL
 =================
 
-Same MCP. Same agent. One new directory.
+Same MCP. Same agent. One new directory, in the one place Claude
+Code actually looks for project Skills -- and a new session again,
+same reason as [02]:
 
 ```
-$ ls skills/
+$ ./scripts/demo-restore-skill.sh
+```
+
+```
+$ ls .claude/skills/
 
 garmin-weekly-performance-report/
 ```
 
 ```
-$ ls skills/garmin-weekly-performance-report/
+$ ls .claude/skills/garmin-weekly-performance-report/
 
 SKILL.md
 metrics.md
@@ -227,6 +241,11 @@ report-template.md
 interpretation-guidelines.md
 scripts/
 ```
+
+A Skill anywhere else -- a top-level `skills/`, a `docs/` folder,
+wherever felt tidy -- is just a directory Claude might stumble
+into while exploring. It only becomes an installed Skill from
+`.claude/skills/`. Ask us how we found that out.
 
 What it teaches the agent, briefly:
 
@@ -309,11 +328,11 @@ reads before doing the job.
 This is the moment PowerPoint can't do.
 
 ```
-:e skills/garmin-weekly-performance-report/SKILL.md
+:e .claude/skills/garmin-weekly-performance-report/SKILL.md
 ```
 
 ```
-$ cat skills/garmin-weekly-performance-report/SKILL.md
+$ cat .claude/skills/garmin-weekly-performance-report/SKILL.md
 ```
 
 What to point at while you're in there:
@@ -335,13 +354,15 @@ discipline to keep them boring. Watch it get built from nothing.
 ```
 $ ./scripts/demo-hide-skill.sh
 
-[ok] hidden: skills/garmin-weekly-performance-report -> .demo-backup/...
-$ ls skills/
+[ok] hidden: .claude/skills/garmin-weekly-performance-report -> .demo-backup/...
+$ ls .claude/skills/
 ```
 
+New session again -- old habit by now.
+
 ```
-$ mkdir -p skills/garmin-weekly-performance-report
-$ touch skills/garmin-weekly-performance-report/SKILL.md
+$ mkdir -p .claude/skills/garmin-weekly-performance-report
+$ touch .claude/skills/garmin-weekly-performance-report/SKILL.md
 ```
 
 We're pasting prepared fragments into each file, not freehand
@@ -352,7 +373,7 @@ of anyone's fifteen minutes.
 One file at a time, say *why* each one exists before adding it:
 
 ```
-skills/
+.claude/skills/
 └── garmin-weekly-performance-report/
     └── SKILL.md
 ```
@@ -371,8 +392,10 @@ skills/
   Copied in wholesale, not typed; nobody hand-writes matplotlib
   calls on stage either.
 
-Then run the prompt from [02]/[04] again. Whatever's missing or
-wrong is the next edit -- that's the iterate step, not a failure.
+Restart once more -- the files exist now, this session just hasn't
+looked yet -- then run the prompt from [02]/[04] again. Whatever's
+missing or wrong is the next edit -- that's the iterate step, not
+a failure.
 
 The progression:
 
@@ -507,8 +530,15 @@ Hope they still work here.
 $ ./scripts/run-demo.sh
 ```
 
-Run the finished Skill for real, against the same prompt one more
-time, ideally against live Garmin MCP data. Offline fallback:
+The Skill already produced a report in [04] -- as text, because
+nobody asked for a file. That's correct behavior, not a gap. Now
+ask for the deliverable directly:
+
+```
+Now give me that as a PDF, with charts.
+```
+
+Ideally against live Garmin MCP data. Offline fallback:
 
 ```
 $ ./scripts/generate-sample-report.sh
@@ -521,8 +551,8 @@ done: output/weekly-report.pdf
 Open the result. Point at:
 
 - the report structure matching `report-template.md` exactly
-- DATA/OBSERVATION/INTERPRETATION actually separated
 - a missing metric reported as missing, not guessed
+- grayscale, dense, no wellness-app gradients
 
 
 [08] OTHER PATTERNS
@@ -572,7 +602,7 @@ conventions, security and networking standards.
 ## A few more, picked short on purpose
 
 ```
-$ ls skills/
+$ ls .claude/skills/
 
 garmin-weekly-performance-report/
 aws-production-deployment/

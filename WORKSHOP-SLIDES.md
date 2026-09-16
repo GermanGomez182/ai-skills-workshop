@@ -183,7 +183,7 @@ how we use those tools.
 ## With a Skill
 
 ```
-$ ls skills/garmin-weekly-performance-report/
+$ ls .claude/skills/garmin-weekly-performance-report/
 
 SKILL.md
 metrics.md
@@ -249,7 +249,7 @@ got written down once.
 ## Inspect the Skill
 
 ```
-:e skills/garmin-weekly-performance-report/SKILL.md
+:e .claude/skills/garmin-weekly-performance-report/SKILL.md
 ```
 
 This is the moment a slide deck can't do.

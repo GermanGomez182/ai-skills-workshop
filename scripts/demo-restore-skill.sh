@@ -6,7 +6,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SKILL_DIR="$ROOT_DIR/skills/garmin-weekly-performance-report"
+SKILL_DIR="$ROOT_DIR/.claude/skills/garmin-weekly-performance-report"
 BACKUP_DIR="$ROOT_DIR/.demo-backup/garmin-weekly-performance-report"
 
 if [ ! -d "$BACKUP_DIR" ]; then
@@ -24,5 +24,8 @@ fi
 mv "$BACKUP_DIR" "$SKILL_DIR"
 rmdir "$ROOT_DIR/.demo-backup" 2>/dev/null || true
 echo "[ok] restored: $SKILL_DIR"
-echo "$ ls skills/"
-ls "$ROOT_DIR/skills"
+echo "$ ls .claude/skills/"
+ls "$ROOT_DIR/.claude/skills"
+echo
+echo "Now restart Claude Code in this directory -- Skills are"
+echo "discovered at session start, not picked up mid-session."

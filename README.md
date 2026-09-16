@@ -25,6 +25,18 @@ Don't teach the AI
 the same thing twice.
 ```
 
+## Important: where the Skill actually has to live
+
+Claude Code only auto-discovers project-level Skills at
+`.claude/skills/<name>/SKILL.md`. A plain `skills/` folder at the
+repo root (which is what an early draft of this project used) is
+invisible to it -- Claude will never register it as an installed
+Skill, and the "with skill" demo will silently behave like the
+"without skill" one (slow, inconsistent, no charts/PDF), which is
+exactly what happened the first time this was rehearsed for real.
+If you ever move or rename the Skill directory, it must stay under
+`.claude/skills/`.
+
 ## Project structure
 
 ```
@@ -35,15 +47,16 @@ skills-workshop/
 +-- NOTES.md                  <- presenter notes. Never shared, never mirrored.
 +-- WORKSHOP-SLIDES.md        <- optional Marp export of the same content
 |
-+-- skills/
-|   +-- garmin-weekly-performance-report/
-|       +-- SKILL.md
-|       +-- metrics.md
-|       +-- report-template.md
-|       +-- interpretation-guidelines.md
-|       +-- scripts/
-|           +-- generate_charts.py
-|           +-- generate_pdf.py
++-- .claude/
+|   +-- skills/                 <- the ONLY path Claude Code scans for
+|       +-- garmin-weekly-performance-report/   project-level Skills
+|           +-- SKILL.md
+|           +-- metrics.md
+|           +-- report-template.md
+|           +-- interpretation-guidelines.md
+|           +-- scripts/
+|               +-- generate_charts.py
+|               +-- generate_pdf.py
 |
 +-- demo/                     <- rehearsal worksheets, not shown live
 |   +-- prompts.md
@@ -151,11 +164,11 @@ Garmin-shaped JSON file matching the schema documented at the top
 of `generate_charts.py`:
 
 ```
-$ python3 skills/garmin-weekly-performance-report/scripts/generate_charts.py \
+$ python3 .claude/skills/garmin-weekly-performance-report/scripts/generate_charts.py \
     --input sample-data/sample-garmin-week.json \
     --output-dir output/charts
 
-$ python3 skills/garmin-weekly-performance-report/scripts/generate_pdf.py \
+$ python3 .claude/skills/garmin-weekly-performance-report/scripts/generate_pdf.py \
     --input sample-data/sample-garmin-week.json \
     --charts-dir output/charts \
     --output output/weekly-report.pdf

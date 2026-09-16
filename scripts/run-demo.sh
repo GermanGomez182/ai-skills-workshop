@@ -5,7 +5,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SKILL_DIR="$ROOT_DIR/skills/garmin-weekly-performance-report"
+SKILL_DIR="$ROOT_DIR/.claude/skills/garmin-weekly-performance-report"
 
 echo "=== AI Skills Workshop: demo check ==="
 echo
@@ -17,8 +17,8 @@ else
 fi
 
 echo
-echo "$ ls skills/"
-ls "$ROOT_DIR/skills"
+echo "$ ls .claude/skills/"
+ls "$ROOT_DIR/.claude/skills"
 echo
 
 echo "--- demo prompt (use it identically before and after installing the skill) ---"

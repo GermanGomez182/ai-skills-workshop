@@ -31,8 +31,8 @@ Run them from the repo root (paths below are relative to it, not
 to this Skill's own directory):
 
 ```
-$ python3 skills/garmin-weekly-performance-report/scripts/generate_charts.py \
+$ python3 .claude/skills/garmin-weekly-performance-report/scripts/generate_charts.py \
     --input week.json --output-dir output/charts/
-$ python3 skills/garmin-weekly-performance-report/scripts/generate_pdf.py \
+$ python3 .claude/skills/garmin-weekly-performance-report/scripts/generate_pdf.py \
     --input week.json --charts-dir output/charts/ --output output/report.pdf
 ```

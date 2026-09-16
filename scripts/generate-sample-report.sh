@@ -10,7 +10,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SKILL_DIR="$ROOT_DIR/skills/garmin-weekly-performance-report"
+SKILL_DIR="$ROOT_DIR/.claude/skills/garmin-weekly-performance-report"
 DATA_FILE="$ROOT_DIR/sample-data/sample-garmin-week.json"
 OUT_DIR="$ROOT_DIR/output"
 CHARTS_DIR="$OUT_DIR/charts"

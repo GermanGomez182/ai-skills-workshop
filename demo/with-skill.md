@@ -4,7 +4,7 @@
 > `WORKSHOP.md` has the audience-facing version of this section.
 
 Same Garmin MCP. Same agent. Only difference:
-`skills/garmin-weekly-performance-report/` now exists.
+`.claude/skills/garmin-weekly-performance-report/` now exists.
 
 ## The prompt
 

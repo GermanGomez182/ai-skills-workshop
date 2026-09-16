@@ -40,11 +40,29 @@ Before this section:
 ./scripts/demo-hide-skill.sh
 ```
 
-This moves `skills/garmin-weekly-performance-report/` to
+This moves `.claude/skills/garmin-weekly-performance-report/` to
 `.demo-backup/garmin-weekly-performance-report/` and refuses to
 run twice (it errors if a backup already exists, so you can't
-accidentally clobber it). `ls skills/` now genuinely comes up
-empty.
+accidentally clobber it).
+
+**Then exit and restart Claude Code in this directory, before
+running the [02] prompt.** Tested, don't skip this: Skills are
+discovered when a session starts, not hot-reloaded mid-session --
+adding or removing `.claude/skills/garmin-weekly-performance-report/`
+while a session is already running does nothing until the next
+session start, regardless of what the docs say about watching for
+changes. (That watching applies to editing an *already-registered*
+skill's files, not to a directory appearing or disappearing.)
+
+This -- a plain `skills/` folder at repo root instead of
+`.claude/skills/` -- is also the exact bug that ate 10 minutes the
+first time this was rehearsed for real: Claude Code never scanned
+it, so the "with skill" run behaved like "without skill." Only
+`.claude/skills/` counts, and only at session start.
+
+If you want a sanity check after restarting: ask "what skills do
+you have available?" and confirm garmin-weekly-performance-report
+isn't in the answer.
 
 Restore it before [04]:
 
@@ -52,9 +70,16 @@ Restore it before [04]:
 ./scripts/demo-restore-skill.sh
 ```
 
-This is the same pair of scripts you'll use again around [06] --
-learn the names once. Don't fake the terminal output if something
-isn't ready (MCP down, script fails) -- say so and move on.
+**Restart Claude Code again** before running the [04] prompt, same
+reason. This is the same pair of scripts (and the same restart
+habit) you'll use again around [06] -- learn it once. Don't fake
+the terminal output if something isn't ready (MCP down, script
+fails) -- say so and move on.
+
+Turning the restart into a beat instead of a chore: it's a real
+demonstration that the Skill lives on disk, not in the
+conversation. Nothing about *this chat* changed between runs --
+only what's sitting in `.claude/skills/` did.
 
 Run the demo prompt live, ask nothing, let the agent's questions
 happen. Then talk through the checklist out loud (it's printed on
@@ -128,7 +153,13 @@ risk is gone and only the *narration* is live.
 ./scripts/demo-hide-skill.sh
 ```
 
-`skills/` is empty again. The original is safe at
+`.claude/skills/` is empty again. **Restart Claude Code now** (same
+rule as [02] -- skills are discovered at session start, not
+hot-reloaded), before you touch a single file. Building the whole
+thing and only restarting at the end would mean testing against a
+session that still thinks the old Skill exists.
+
+The original is safe at
 `.demo-backup/garmin-weekly-performance-report/`.
 
 **The build, in order.** Fragments live in `demo/build-along/` and
@@ -138,9 +169,9 @@ the next one so they land in the right place; don't sweat exact
 blank-line spacing, nobody's diffing this live.
 
 ```
-$ mkdir -p skills/garmin-weekly-performance-report
-$ touch skills/garmin-weekly-performance-report/SKILL.md
-$ nvim skills/garmin-weekly-performance-report/SKILL.md
+$ mkdir -p .claude/skills/garmin-weekly-performance-report
+$ touch .claude/skills/garmin-weekly-performance-report/SKILL.md
+$ nvim .claude/skills/garmin-weekly-performance-report/SKILL.md
 ```
 
 1. `:r demo/build-along/01-job-and-trigger.md`
@@ -157,11 +188,11 @@ $ nvim skills/garmin-weekly-performance-report/SKILL.md
 
    ```
    $ cp .demo-backup/garmin-weekly-performance-report/metrics.md \
-        skills/garmin-weekly-performance-report/metrics.md
+        .claude/skills/garmin-weekly-performance-report/metrics.md
    $ cp .demo-backup/garmin-weekly-performance-report/report-template.md \
-        skills/garmin-weekly-performance-report/report-template.md
+        .claude/skills/garmin-weekly-performance-report/report-template.md
    $ cp .demo-backup/garmin-weekly-performance-report/interpretation-guidelines.md \
-        skills/garmin-weekly-performance-report/interpretation-guidelines.md
+        .claude/skills/garmin-weekly-performance-report/interpretation-guidelines.md
    ```
 
    Open `interpretation-guidelines.md` briefly and point at the
@@ -181,18 +212,22 @@ $ nvim skills/garmin-weekly-performance-report/SKILL.md
    something you compose live any more than the reference docs are:
 
    ```
-   $ mkdir skills/garmin-weekly-performance-report/scripts
+   $ mkdir .claude/skills/garmin-weekly-performance-report/scripts
    $ cp .demo-backup/garmin-weekly-performance-report/scripts/*.py \
-        skills/garmin-weekly-performance-report/scripts/
+        .claude/skills/garmin-weekly-performance-report/scripts/
    ```
 
-7. **Test.** Run the prompt from [02]/[04] again against what you
-   just built. It should behave the same as [04] -- if it doesn't,
-   that's a real, live "iterate" moment, not a script failure.
+7. `:r demo/build-along/05-files-in-this-skill.md`
+   -- closing section, "iterate" as an explicit habit, not a
+   one-time step. Save.
 
-8. `:r demo/build-along/05-files-in-this-skill.md`
-   -- closing section, "iterate" as an explicit habit, not a one-time
-   step.
+8. **Restart Claude Code** -- the Skill directory now exists again,
+   but this session's client only saw it missing. Same rule as
+   every other switch in this talk.
+
+9. **Test.** Run the prompt from [02]/[04] again in the new session.
+   It should behave the same as [04] -- if it doesn't, that's a
+   real, live "iterate" moment, not a script failure.
 
 **If you're behind schedule when you reach [06]:** skip straight to
 
@@ -200,16 +235,31 @@ $ nvim skills/garmin-weekly-performance-report/SKILL.md
 ./scripts/demo-restore-skill.sh
 ```
 
-and walk the finished `skills/garmin-weekly-performance-report/`
-directory instead of doing the live build. This is a legitimate,
+then restart Claude Code, and walk the finished
+`.claude/skills/garmin-weekly-performance-report/` directory
+instead of doing the live build. This is a legitimate,
 pre-planned fallback, not a failure -- use it decisively rather than
 rushing the live-coding and running even further behind.
 
 **If the live build finishes normally:** you don't need to run
 `demo-restore-skill.sh` at all -- what you just built by hand *is*
-the real thing, byte-for-byte, ready for [07].
+the real thing, byte-for-byte. You still need the restart from step
+8 before it's usable in [07].
 
 ## [07] RUN IT
+
+`SKILL.md` only generates a PDF "if the user wants a PDF" -- on
+purpose, so it doesn't produce files nobody asked for. The vague
+prompt from [02]/[04] never asks for one, so [04] correctly ends
+with a text report, not a file. Don't read that as a gap live --
+say it out loud as intentional, then ask for the file:
+
+```
+Now give me that as a PDF, with charts.
+```
+
+That's the actual payoff of this section: a real request produces
+a real, polished deliverable, still governed by the same Skill.
 
 Prefer live Garmin MCP data here if it's working. Fallback:
 
@@ -250,7 +300,7 @@ actual ending, not a segue into more talking.
 - Skill directory missing when you meant to restore it before
   [04]: run `./scripts/demo-restore-skill.sh`. If that also fails
   (no backup found -- e.g. you hid it twice by hand), it's still
-  committed in git: `git checkout -- skills/garmin-weekly-performance-report`
+  committed in git: `git checkout -- .claude/skills/garmin-weekly-performance-report`
   gets you back to the last commit's version.
 - Running long: cut in this order -- [08] montage, [06] live
   edit-run-fix loop, [07] live MCP run (use the offline script
