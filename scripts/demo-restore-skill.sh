@@ -1,31 +1,33 @@
 #!/usr/bin/env bash
-# Restores the Skill hidden by demo-hide-skill.sh. Safe to run as
-# a fallback mid-[06] if a live rebuild goes sideways -- restoring
-# gets you back to a working Skill for [07] even if the build-along
-# didn't finish.
+# Deploys the version-controlled master (skill-source/) into the
+# LIVE, discoverable location (.claude/skills/, untracked). Safe to
+# run as a fallback mid-[06] if a live rebuild goes sideways --
+# restoring gets you back to a working Skill for [07] even if the
+# build-along didn't finish.
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SOURCE_DIR="$ROOT_DIR/skill-source/garmin-weekly-performance-report"
 SKILL_DIR="$ROOT_DIR/.claude/skills/garmin-weekly-performance-report"
-BACKUP_DIR="$ROOT_DIR/.demo-backup/garmin-weekly-performance-report"
 
-if [ ! -d "$BACKUP_DIR" ]; then
-  echo "[!!] no backup found at $BACKUP_DIR -- nothing to restore" >&2
+if [ ! -d "$SOURCE_DIR" ]; then
+  echo "[!!] no master copy found at $SOURCE_DIR" >&2
   exit 1
 fi
 
 if [ -d "$SKILL_DIR" ]; then
-  echo "[!!] $SKILL_DIR already exists -- remove or rename it first" >&2
+  echo "[!!] $SKILL_DIR already exists -- remove it first" >&2
   echo "     (if this is a live-built version you want to keep, move" >&2
   echo "     it aside instead of overwriting it)" >&2
   exit 1
 fi
 
-mv "$BACKUP_DIR" "$SKILL_DIR"
-rmdir "$ROOT_DIR/.demo-backup" 2>/dev/null || true
-echo "[ok] restored: $SKILL_DIR"
+mkdir -p "$ROOT_DIR/.claude/skills"
+cp -r "$SOURCE_DIR" "$SKILL_DIR"
+echo "[ok] deployed: $SOURCE_DIR -> $SKILL_DIR"
 echo "$ ls .claude/skills/"
 ls "$ROOT_DIR/.claude/skills"
 echo
-echo "Now restart Claude Code in this directory -- Skills are"
-echo "discovered at session start, not picked up mid-session."
+echo "If the agent says 'Unknown skill' when you invoke it, retry"
+echo "once or twice before restarting Claude Code -- discovery"
+echo "timing has been inconsistent in testing."

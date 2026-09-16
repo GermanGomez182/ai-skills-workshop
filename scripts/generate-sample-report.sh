@@ -10,7 +10,10 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SKILL_DIR="$ROOT_DIR/.claude/skills/garmin-weekly-performance-report"
+# Runs straight from the version-controlled master -- this is a
+# plain script invocation, not a Claude Code skill-discovery path,
+# so it doesn't need the deployed .claude/skills/ copy to exist.
+SKILL_DIR="$ROOT_DIR/skill-source/garmin-weekly-performance-report"
 DATA_FILE="$ROOT_DIR/sample-data/sample-garmin-week.json"
 OUT_DIR="$ROOT_DIR/output"
 CHARTS_DIR="$OUT_DIR/charts"

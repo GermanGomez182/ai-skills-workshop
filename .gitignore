@@ -5,4 +5,9 @@ __pycache__/
 output/*
 !output/.gitkeep
 
-.demo-backup/
+# The live, discoverable copy of the Skill. Never tracked here on
+# purpose -- see skill-source/ for the version-controlled master.
+# Keeping this untracked means hiding/restoring it during the demo
+# never shows up in `git status`, so nothing invites an agent to
+# "helpfully" restore it from git history mid-demo.
+.claude/skills/

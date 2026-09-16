@@ -34,8 +34,27 @@ invisible to it -- Claude will never register it as an installed
 Skill, and the "with skill" demo will silently behave like the
 "without skill" one (slow, inconsistent, no charts/PDF), which is
 exactly what happened the first time this was rehearsed for real.
-If you ever move or rename the Skill directory, it must stay under
-`.claude/skills/`.
+
+That directory, `.claude/skills/`, is **gitignored on purpose** and
+does not exist on a fresh clone. The version-controlled master is
+`skill-source/garmin-weekly-performance-report/`. Deploy it once:
+
+```
+$ ./scripts/demo-restore-skill.sh
+```
+
+Why the split: the first rehearsal committed the Skill straight
+into `.claude/skills/`, and hiding it for the without-skill demo
+left a `D` in `git status` -- which the agent noticed and
+"helpfully" restored from the last commit, defeating the demo. The
+live, discoverable copy now stays untracked; only `skill-source/`
+is version-controlled.
+
+Also: Skill discovery timing has been inconsistent in testing --
+sometimes a newly deployed Skill is picked up within the same
+session, sometimes it takes a restart of Claude Code in this
+directory. Don't assume either; see `NOTES.md` for how to handle
+it live.
 
 ## Project structure
 
@@ -49,14 +68,19 @@ skills-workshop/
 |
 +-- .claude/
 |   +-- skills/                 <- the ONLY path Claude Code scans for
-|       +-- garmin-weekly-performance-report/   project-level Skills
-|           +-- SKILL.md
-|           +-- metrics.md
-|           +-- report-template.md
-|           +-- interpretation-guidelines.md
-|           +-- scripts/
-|               +-- generate_charts.py
-|               +-- generate_pdf.py
+|       +-- garmin-weekly-performance-report/   project Skills.
+|                                                Gitignored -- deploy
+|                                                with demo-restore-skill.sh
+|
++-- skill-source/              <- version-controlled master copy
+|   +-- garmin-weekly-performance-report/
+|       +-- SKILL.md
+|       +-- metrics.md
+|       +-- report-template.md
+|       +-- interpretation-guidelines.md
+|       +-- scripts/
+|           +-- generate_charts.py
+|           +-- generate_pdf.py
 |
 +-- demo/                     <- rehearsal worksheets, not shown live
 |   +-- prompts.md
@@ -73,8 +97,8 @@ skills-workshop/
 +-- scripts/
     +-- run-demo.sh
     +-- generate-sample-report.sh
-    +-- demo-hide-skill.sh    <- stages the "no skill yet" state for [02]/[06]
-    +-- demo-restore-skill.sh <- undoes it
+    +-- demo-hide-skill.sh    <- rm's .claude/skills/..., for [02]/[06]
+    +-- demo-restore-skill.sh <- deploys skill-source/ -> .claude/skills/
 ```
 
 ## How to open the workshop
@@ -164,15 +188,19 @@ Garmin-shaped JSON file matching the schema documented at the top
 of `generate_charts.py`:
 
 ```
-$ python3 .claude/skills/garmin-weekly-performance-report/scripts/generate_charts.py \
+$ python3 skill-source/garmin-weekly-performance-report/scripts/generate_charts.py \
     --input sample-data/sample-garmin-week.json \
     --output-dir output/charts
 
-$ python3 .claude/skills/garmin-weekly-performance-report/scripts/generate_pdf.py \
+$ python3 skill-source/garmin-weekly-performance-report/scripts/generate_pdf.py \
     --input sample-data/sample-garmin-week.json \
     --charts-dir output/charts \
     --output output/weekly-report.pdf
 ```
+
+(These paths use `skill-source/`, the version-controlled master,
+since this is a plain script run -- not a Claude Code Skill
+invocation, so it doesn't need `.claude/skills/` deployed.)
 
 Style is deliberately plain: grayscale, monospace, dense. Not a
 wellness app.

@@ -98,10 +98,6 @@ No Skill installed yet.
 $ ./scripts/demo-hide-skill.sh
 ```
 
-New Claude Code session -- Skills load at session start, not mid-
-conversation. Nothing about *this chat* changes between runs; only
-what's on disk does.
-
 ```
 $ ls .claude/skills/
 
@@ -219,8 +215,7 @@ how we use those tools.
 =================
 
 Same MCP. Same agent. One new directory, in the one place Claude
-Code actually looks for project Skills -- and a new session again,
-same reason as [02]:
+Code actually looks for project Skills:
 
 ```
 $ ./scripts/demo-restore-skill.sh
@@ -246,6 +241,13 @@ A Skill anywhere else -- a top-level `skills/`, a `docs/` folder,
 wherever felt tidy -- is just a directory Claude might stumble
 into while exploring. It only becomes an installed Skill from
 `.claude/skills/`. Ask us how we found that out.
+
+Also: this `.claude/skills/` copy is deliberately *not* the one
+tracked in git. The version-controlled master lives at
+`skill-source/`. First rehearsal, hiding a git-tracked Skill left
+a `D` in `git status` -- and the agent, quite reasonably, "fixed"
+it by restoring it from the last commit. Two bugs in one demo.
+We're keeping both stories.
 
 What it teaches the agent, briefly:
 
@@ -354,11 +356,9 @@ discipline to keep them boring. Watch it get built from nothing.
 ```
 $ ./scripts/demo-hide-skill.sh
 
-[ok] hidden: .claude/skills/garmin-weekly-performance-report -> .demo-backup/...
+[ok] removed: .claude/skills/garmin-weekly-performance-report
 $ ls .claude/skills/
 ```
-
-New session again -- old habit by now.
 
 ```
 $ mkdir -p .claude/skills/garmin-weekly-performance-report
@@ -392,10 +392,8 @@ One file at a time, say *why* each one exists before adding it:
   Copied in wholesale, not typed; nobody hand-writes matplotlib
   calls on stage either.
 
-Restart once more -- the files exist now, this session just hasn't
-looked yet -- then run the prompt from [02]/[04] again. Whatever's
-missing or wrong is the next edit -- that's the iterate step, not
-a failure.
+Run the prompt from [02]/[04] again. Whatever's missing or wrong
+is the next edit -- that's the iterate step, not a failure.
 
 The progression:
 

@@ -13,12 +13,13 @@ echo
 if [ -d "$SKILL_DIR" ]; then
   echo "[ok] skill found: $SKILL_DIR"
 else
-  echo "[!!] skill not found at $SKILL_DIR -- did you delete it for the demo?"
+  echo "[!!] skill not deployed at $SKILL_DIR"
+  echo "     run ./scripts/demo-restore-skill.sh (or is it hidden for the demo on purpose?)"
 fi
 
 echo
 echo "$ ls .claude/skills/"
-ls "$ROOT_DIR/.claude/skills"
+ls "$ROOT_DIR/.claude/skills" 2>/dev/null || echo "(missing -- run ./scripts/demo-restore-skill.sh)"
 echo
 
 echo "--- demo prompt (use it identically before and after installing the skill) ---"
