@@ -175,34 +175,41 @@ qualitatively (no questions, small, exact shape).
 Rehearsal 2026-09-16: last week took about 23 s and 14 calls; last
 3 days about 18 s and 6 calls. Both printed exactly the table.
 
-**The fix is real, pick it off the screen.** Checked again on
-2026-09-17 with the file exactly as typed here, two runs back to
-back:
+**The fix: the Day column.** Don't hunt for a dramatic bug -- there
+isn't one. Checked 2026-09-17: the same prompt twice gives a
+byte-identical table, which is the good news you just sold. The
+thing worth fixing is right there in it:
 
 ```
-last week:    | **Average** | **54** | **67** |   <- bold
-last 3 days:  | Average | 54 | 68 |               <- not bold
+| Day        | Resting HR | Sleep score |
+| 2026-09-14 | 56         | 58          |
 ```
 
-Both printed the day as `2026-09-10`, never `Mon 10`: step 3 never
-says what the Day column looks like. So there are two honest fixes,
-either one is a one-liner in step 3:
+You asked for "one line per day" and got an ISO date. Nobody reads
+`2026-09-14` as Saturday. Step 3 never said what that column looks
+like, so the model decided for you. That is the whole lesson: what
+you don't write down, it picks.
 
-```
-   Averages: whole numbers, no bold.
-```
+On stage, 30 seconds:
 
-```
-   Day column: weekday and day number, like "Mon 10".
-```
+1. Point at the column in the run already on screen. "Did I choose
+   that? No. I said one line per day, and nothing else."
+2. Add one line to step 3:
 
-Say the lesson: "same shape every time" is what we wanted, and the
-Skill didn't quite say it. Then save, exit Claude,
-`../scripts/claude.sh`, same prompt. The restart is part of it --
-the Skill is read from disk, not from the conversation.
+   ```
+   Day column: weekday and day number, like "Mon 14".
+   ```
 
-If the run goes wrong on its own (wrong days, extra text), use that
-instead: fix the line that caused it, live.
+3. Exit Claude, `../scripts/claude.sh`, same prompt.
+4. `Mon 14`, `Tue 15`, `Wed 16`.
+
+The restart carries its own lesson: the Skill is read from disk, not
+from the conversation.
+
+Equally visible alternatives, pick one: `Sort newest day first.` or
+`Mark sleep scores below 60 with (!).` If the run goes wrong on its
+own (wrong days, extra text), use that instead -- a real bug beats a
+planned one.
 
 ## [06] MCP VS SKILL
 

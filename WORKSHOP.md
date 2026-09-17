@@ -235,14 +235,27 @@ Now use the parameter, in plain English:
 Create a report about my last 3 days.
 ```
 
-Something not quite right? That's not a failure, that's the next
-edit. Change a line in `SKILL.md`, restart, run it again.
+Look at the Day column:
+
+```
+| Day        | Resting HR | Sleep score |
+| 2026-09-14 | 56         | 58          |
+```
+
+I never said what a day looks like, so it chose. What you don't
+write down, the model decides.
+
+One line into step 3, restart, run it again:
+
+```
+Day column: weekday and day number, like "Mon 14".
+```
 
 ```
 WRITE IT DOWN -> TEST -> FIX -> REPEAT
 ```
 
-A Skill is code. It has bugs. You fix them like code.
+A Skill is code. You read the output, change a line, run it again.
 
 
 [06] MCP VS SKILL
