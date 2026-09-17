@@ -2,7 +2,7 @@
 
 Fill this shape. Don't add sections, don't remove sections, don't
 reorder them. If a section has nothing meaningful to say, write
-"No meaningful change this week" instead of deleting the section.
+"Nothing notable this week" instead of deleting the section.
 
 ```
 WEEKLY PERFORMANCE REPORT
@@ -22,37 +22,37 @@ TRAINING
 Total training time
 Number of activities
 Activity distribution
-Training load
-Comparison vs previous week
+Rest days
+Acute load, first day -> last day
 
 
 RECOVERY
 
-Resting HR
-HRV
-Body Battery
-Training readiness
-Recovery-related trends
+Resting HR (avg)
+HRV (avg)
+Body Battery (avg daily high / low)
+Training readiness (avg)
+Stress (avg)
 
 
 SLEEP
 
 Average duration
+Shortest night
 Average sleep score
-Consistency
-Comparison vs previous week
 
 
-NOTABLE CHANGES
+NOTABLE DAYS
 
-Only changes that cross the thresholds in metrics.md.
+Only days that cross the thresholds in metrics.md, one line per
+day and metric, with the Garmin baseline it was compared against.
 If nothing crossed a threshold, say so plainly.
 
 
-4-WEEK CONTEXT
+GARMIN BASELINES
 
-Relevant longer-term patterns. Skip this section's content
-(but keep the heading) if there isn't enough history yet.
+What Garmin's own rolling numbers say at the end of the week:
+7-day avg resting HR, weekly avg HRV, acute load.
 
 
 THINGS TO WATCH
@@ -63,6 +63,9 @@ week. Framed as things to watch, not conclusions.
 
 ## Writing rules for this template
 
+- The web report (`scripts/generate_html.py`) renders these sections
+  in this order. The numbers come from the data; the executive
+  summary and things to watch come from your `narrative`.
 - Executive summary is written **last**, after every other
   section is done. It's a compression of the report, not a
   preview.

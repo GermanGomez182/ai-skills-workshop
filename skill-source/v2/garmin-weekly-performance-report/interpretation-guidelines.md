@@ -18,23 +18,23 @@ observation might mean. Always hedged. Never a diagnosis.
 ```
 DATA
 
-Average sleep:
-6h 18m
+Saturday overnight HRV:   39 ms
+Garmin weekly avg HRV:    44 ms
 
 OBSERVATION
 
-Sleep decreased 11%
-compared with the previous week.
+HRV was 11% below Garmin's own
+weekly average that night.
 
 INTERPRETATION
 
-This coincided with an increase
-in training load.
+This coincided with the longest
+run of the week, the same day.
 ```
 
 Notice what the interpretation does *not* say: it does not say the
-training caused the sleep loss. It says the two things happened in
-the same window. That distinction is the whole job.
+run caused the HRV dip. It says the two things happened in the same
+window. That distinction is the whole job.
 
 ## Hard rules
 
@@ -73,3 +73,7 @@ Rewrite it as an observation instead, or drop it.
 - Did two correlated metrics get described with a causal verb
   ("caused", "led to", "resulted in")? Replace with "coincided
   with" or similar.
+- Does every weekday and date you name match a `date` in
+  `output/week.json`, with the activities that day actually has?
+  Work out weekday names from the date, never from memory. (A real
+  run once put Sunday's runs on "Saturday, Sep 13".)
