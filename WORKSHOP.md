@@ -23,24 +23,27 @@ $ _
 ===========
 
 ```
-00:00   WTF is a Skill?             5 min
-00:05   Garmin without Skill        8 min
-00:13   MCP vs Skill                7 min
-00:20   Garmin with Skill           8 min
-00:28   Inspect the Skill           5 min
-00:33   Build a Skill together     15 min
-00:48   Run the Skill               5 min
-00:53   Other patterns              5 min
-00:58   Q&A
+00:00   WTF is a Skill?              5 min
+00:05   No Skill                     5 min
+00:10   Anatomy of a Skill           5 min
+00:15   Build one by hand           10 min
+00:25   Test it, fix it              5 min
+00:30   MCP vs Skill                 5 min
+00:35   Level up                    10 min
+00:45   Why the extra files          5 min
+00:50   Other patterns               5 min
+00:55   Q&A
 ```
 
-One continuous story. Not nine slides.
+Same prompt, three times. Watch what changes.
 
 
 [01] WTF IS A SKILL?
 =====================
 
-Three things. Say them slowly.
+```
+$ man skill
+```
 
 ```
 MODEL
@@ -53,8 +56,6 @@ SKILLS
 know how WE do things
 ```
 
-Put together:
-
 ```
   Model
     +
@@ -65,8 +66,6 @@ Put together:
   Specialized Agent
 ```
 
-The takeaway, in one line:
-
 ```
 Prompts solve a task.
 
@@ -74,133 +73,210 @@ Skills encode how your team solves
 a class of tasks.
 ```
 
-And the one you'll hear again at the end:
+
+[02] NO SKILL
+===============
+
+Claude Code, connected to my real Garmin account through an MCP
+server. It can read my activities, sleep, heart rate, stress,
+training readiness. Real data.
+
+Our project for today. Empty, on purpose:
 
 ```
-Don't teach the AI
-the same thing twice.
-```
+$ cd demo
+$ ../scripts/demo-reset.sh
+$ ls -A
 
-We're going to demonstrate this, not describe it.
-
-
-[02] WITHOUT SKILL
-====================
-
-The scenario: Garmin MCP is connected to Garmin Connect. The
-agent can pull activities, sleep, HR, HRV, training load,
-recovery, training readiness, stress, body battery. Real access,
-real data.
-
-No Skill installed yet.
-
-```
-$ ./scripts/demo-hide-skill.sh
+.claude/     <- settings, no skills
+.mcp.json    <- the Garmin connection
+output/      <- empty
+.venv        <- Python, for later
 ```
 
 ```
-$ ls .claude/skills/
-
-ls: cannot access '.claude/skills/': No such file or directory
+$ ../scripts/claude-demo.sh
 ```
 
-One prompt. Deliberately vague, because that's how real requests
-show up in Slack:
+(`claude-demo.sh` = Claude Code inside this folder, with this
+folder's settings only. No personal skills, no cheating.)
+
+The prompt. Deliberately vague, like every real request:
 
 ```
 Create a report about my last week.
 ```
 
-Run it live. Let the questions happen.
-
-Likely trouble, in no particular order:
+The agent has to guess everything:
 
 ```
-What does "report" mean?
-Which metrics matter?
-Should training and sleep be combined?
-Should it compare against previous weeks?
-What period exactly means "last week"?
-Should it generate charts?
-Should the output be Markdown or PDF?
-What constitutes an important change?
-What should the report emphasize?
-Should it make recommendations?
-What should it not infer?
+Which metrics?
+Which days?
+How long?
+Table? Essay? File?
+What is it allowed to say about my health?
 ```
 
-AI:
+So it asks, or it guesses. Usually it guesses big.
+
+What I actually wanted:
 
 ```
-Sure! Before I begin,
-I have seventeen questions.
+Resting heart rate and sleep score.
+One line per day.
+That's it.
 ```
 
-While it runs, watch for:
+
+[03] ANATOMY OF A SKILL
+=========================
+
+A Skill is a folder with a markdown file in it.
 
 ```
-- follow-up questions asked
-- tool calls made
-- manual instructions you had to supply
-- missing requirements exposed
-- time to result
-- format compliance
-- consistency (would two runs even look alike?)
+.claude/skills/
+└── garmin-weekly-performance-report/
+    └── SKILL.md
 ```
 
-Keep that list in mind. We're running the exact same prompt again
-in a few minutes.
+It has to live in `.claude/skills/`. Anywhere else, it's just a
+folder with markdown in it. (We learned that one live.)
+
+`SKILL.md` has two parts:
+
+```
+---
+name: ...             <- what it's called
+description: ...      <- WHEN to use it
+---
+
+...                   <- HOW to do the job
+```
+
+The agent does not read every Skill all the time. It only sees
+each `name` and `description`, and loads the rest when a request
+matches.
+
+```
+100 SKILLS INSTALLED
+
+does not mean
+
+100 SKILLS IN CONTEXT
+```
+
+So the description is the most important line in the file.
 
 
-[03] MCP VS SKILL
+[04] BUILD ONE BY HAND
+========================
+
+```
+$ mkdir -p .claude/skills/garmin-weekly-performance-report
+$ nvim .claude/skills/garmin-weekly-performance-report/SKILL.md
+```
+
+```
+---
+name: garmin-weekly-performance-report
+description: Garmin health report with resting heart rate and sleep score per day. Use when the user asks for a report about their last week, their recent days, their sleep or their heart rate.
+---
+
+# Garmin report
+
+1. Period: the last 7 days, ending yesterday. If the user asks for
+   a number of days ("my last 3 days"), use that instead.
+2. For each day, call `get_stats` (resting HR) and
+   `get_sleep_summary` (sleep score). All calls in parallel.
+   Nothing else.
+3. Reply with this table and nothing more:
+
+   | Day | Resting HR | Sleep score |
+
+   Last row: the average of each column.
+4. Missing value: write "-". Never guess a number.
+5. No medical advice. No recommendations.
+```
+
+Nineteen lines. No code. Every line is a decision the agent would
+otherwise have to guess:
+
+```
+which days              -> 1
+which data, which calls -> 2
+what shape              -> 3
+what if it's missing    -> 4
+what it must never do   -> 5
+```
+
+Restart Claude so it finds the new Skill:
+
+```
+$ ../scripts/claude-demo.sh
+```
+
+
+[05] TEST IT, FIX IT
+======================
+
+Same prompt as [02]. Character for character:
+
+```
+Create a report about my last week.
+```
+
+Look at the difference:
+
+```
+- no questions
+- a few small tool calls instead of a tour of the API
+- the table I asked for, nothing else
+- same shape every time I run it
+```
+
+Now use the parameter, in plain English:
+
+```
+Create a report about my last 3 days.
+```
+
+Something not quite right? That's not a failure, that's the next
+edit. Change a line in `SKILL.md`, restart, run it again.
+
+```
+WRITE IT DOWN -> TEST -> FIX -> REPEAT
+```
+
+A Skill is code. It has bugs. You fix them like code.
+
+
+[06] MCP VS SKILL
 ===================
 
-These are not competitors. They answer different questions.
-
 ```
-TOOLS answer:
-
-"What can the agent access or execute?"
-
-
-SKILLS answer:
-
-"How should the agent perform this job?"
+$ diff mcp skill
 ```
 
-Concretely, for this exact demo:
+Look at what just happened:
 
 ```
-GARMIN MCP
-==========
+GARMIN MCP                      SKILL
+==========                      =====
 
-Gives the agent ACCESS to:
+get_stats                       which days
+get_sleep_summary               which calls
+...and many more tools          which numbers
+                                what shape
 
-- sleep data
-- activities
-- heart rate
-- HRV
-- training load
-- recovery metrics
-
-It knows HOW TO GET the data.
+It knows HOW TO GET the data.   It knows WHAT WE WANT from it.
 ```
 
+Not competitors. Different questions:
+
 ```
-WEEKLY FITNESS REPORT SKILL
-===========================
+MCP:     "What can the agent access?"
 
-Teaches the agent:
-
-- which data matters
-- what period to analyze
-- how to compare weeks
-- what sections to create
-- what charts to generate
-- what not to infer
-- how the final report should look
-
-It knows HOW TO DO THE JOB.
+SKILL:   "How should the agent do this job?"
 ```
 
 ```
@@ -211,445 +287,131 @@ how we use those tools.
 ```
 
 
-[04] WITH SKILL
-=================
+[07] LEVEL UP
+===============
 
-Same MCP. Same agent. One new directory, in the one place Claude
-Code actually looks for project Skills:
-
-```
-$ ./scripts/demo-restore-skill.sh
-```
+Same Skill. Version 2. Built for a real weekly report.
 
 ```
-$ ls .claude/skills/
-
-garmin-weekly-performance-report/
+$ ../scripts/install-skill.sh v2
+$ ../scripts/claude-demo.sh
 ```
 
 ```
-$ ls .claude/skills/garmin-weekly-performance-report/
-
-SKILL.md
-metrics.md
-report-template.md
-interpretation-guidelines.md
-scripts/
+.claude/skills/garmin-weekly-performance-report/
+├── SKILL.md                      <- same idea as yours, longer
+├── metrics.md                    <- what counts as "notable"
+├── report-template.md            <- the sections, in order
+├── interpretation-guidelines.md  <- how to talk about health data
+└── scripts/
+    ├── generate_html.py          <- builds the web report
+    ├── open_in_chrome.sh         <- opens it
+    └── ...                       <- charts, PDF, shared numbers
 ```
 
-A Skill anywhere else -- a top-level `skills/`, a `docs/` folder,
-wherever felt tidy -- is just a directory Claude might stumble
-into while exploring. It only becomes an installed Skill from
-`.claude/skills/`. Ask us how we found that out.
-
-Also: this `.claude/skills/` copy is deliberately *not* the one
-tracked in git. The version-controlled master lives at
-`skill-source/`. First rehearsal, hiding a git-tracked Skill left
-a `D` in `git status` -- and the agent, quite reasonably, "fixed"
-it by restoring it from the last commit. Two bugs in one demo.
-We're keeping both stories.
-
-What it teaches the agent, briefly:
-
-- retrieve the previous 7 complete days
-- compare current week / previous week / 4-week baseline
-- pull training, recovery, sleep, stress, body battery,
-  readiness -- whatever's available, nothing fabricated
-- separate DATA, OBSERVATION, and INTERPRETATION
-- never diagnose, never claim causality, hedge language
-- fill one fixed report structure, every time
-- optionally render a plain, grayscale PDF
-
-The DATA / OBSERVATION / INTERPRETATION split, since it's the part
-people get wrong in production:
-
-```
-DATA
-
-Average sleep:
-6h 18m
-
-OBSERVATION
-
-Sleep decreased 11%
-compared with the previous week.
-
-INTERPRETATION
-
-This coincided with an increase
-in training load.
-```
-
-Notice the interpretation doesn't say training *caused* the sleep
-loss. Full rules: `interpretation-guidelines.md`.
-
-Report shape (full version in `report-template.md`):
-
-```
-WEEKLY PERFORMANCE REPORT
-
-Period: YYYY-MM-DD -> YYYY-MM-DD
-
-EXECUTIVE SUMMARY
-TRAINING
-RECOVERY
-SLEEP
-NOTABLE CHANGES
-4-WEEK CONTEXT
-THINGS TO WATCH
-```
-
-Now, the exact same prompt as [02]. Character for character:
+Same prompt. Third time:
 
 ```
 Create a report about my last week.
 ```
 
-Same seven things to watch as before. Talk through the delta out
-loud:
-
 ```
-- follow-up questions asked
-- tool calls made
-- manual instructions you had to supply
-- missing requirements exposed
-- time to result
-- format compliance
-- consistency
+$ _
 ```
 
-What changed isn't the model. It's that the team's judgment calls
--- which period, which metrics, what counts as notable, what
-language is safe -- got written down once, in a place the agent
-reads before doing the job.
 
+[08] WHY THE EXTRA FILES
+==========================
 
-[05] INSPECT THE SKILL
-========================
+Same shape as the v1 you just watched me type. It just grew.
 
-This is the moment PowerPoint can't do.
+**References, not one giant file.** `SKILL.md` stays short and
+points at the other files. The agent reads them when it needs them.
 
-```
-:e .claude/skills/garmin-weekly-performance-report/SKILL.md
-```
+**The model writes words. Scripts draw numbers.**
 
 ```
-$ cat .claude/skills/garmin-weekly-performance-report/SKILL.md
+THE MODEL writes     the summary, what to watch
+THE SCRIPT draws     every number, chart, flagged day
 ```
 
-What to point at while you're in there:
+The model can't fudge a chart, and the page looks the same every
+week.
 
-- the `description:` field -- this is what makes the Skill
-  *discoverable* without loading the whole thing (more in [06])
-- the boundaries section -- what it refuses to do, and why that's
-  written down instead of assumed
-- the references out to `metrics.md` and
-  `interpretation-guidelines.md` instead of one giant file
+It also makes mistakes visible. In rehearsal the model wrote that
+my runs were on "Saturday". The chart, drawn from the data, put
+them on Sunday. The chart was right. The fix was one new check in
+`interpretation-guidelines.md`.
 
-
-[06] BUILD ONE
-================
-
-A Skill is not magic. It's a directory, some files, and the
-discipline to keep them boring. Watch it get built from nothing.
+**Health data needs manners.** Say what happened, not why:
 
 ```
-$ ./scripts/demo-hide-skill.sh
-
-[ok] removed: .claude/skills/garmin-weekly-performance-report
-$ ls .claude/skills/
+DATA            HRV 39 ms, Garmin average 44 ms
+OBSERVATION     11% below average that night
+INTERPRETATION  coincided with the longest run of the week
 ```
 
-```
-$ mkdir -p .claude/skills/garmin-weekly-performance-report
-$ touch .claude/skills/garmin-weekly-performance-report/SKILL.md
-```
+"Coincided with". Never "caused by".
 
-We're pasting prepared fragments into each file, not freehand
-composing paragraphs live -- nobody's here to watch prose get
-written in real time, and a YAML frontmatter typo isn't a good use
-of anyone's fifteen minutes.
+**Skills are code. Code has performance bugs.** The first version
+of this Skill asked for four weeks of history: about eleven minutes
+per run. One paragraph changed it to one week: about three.
 
-One file at a time, say *why* each one exists before adding it:
-
-```
-.claude/skills/
-└── garmin-weekly-performance-report/
-    └── SKILL.md
-```
-
-- **SKILL.md** gets its job, its trigger phrases, and its rules
-  (period, comparison windows, what data to pull) first.
-- **metrics.md** -- because "meaningful change" needs a real
-  threshold, not vibes.
-- **report-template.md** -- because the shape of the report
-  shouldn't get reinvented weekly.
-- **interpretation-guidelines.md** -- because this is a health
-  report and language matters. This is also where SKILL.md gets
-  wired up to actually use these three files and the scripts.
-- **boundaries**, back in SKILL.md -- what it must never do.
-- **scripts/** -- charts and PDFs are a job for code, not prose.
-  Copied in wholesale, not typed; nobody hand-writes matplotlib
-  calls on stage either.
-
-Run the prompt from [02]/[04] again. Whatever's missing or wrong
-is the next edit -- that's the iterate step, not a failure.
-
-The progression:
-
-```
-DEFINE THE JOB
-      |
-DEFINE THE RULES
-      |
-DEFINE REQUIRED CONTEXT
-      |
-ADD EXAMPLES
-      |
-DEFINE WHAT NOT TO DO
-      |
-TEST
-      |
-ITERATE
-```
-
-## Progressive disclosure
-
-```
-100 SKILLS INSTALLED
-
-does not mean
-
-100 SKILLS IN CONTEXT
-```
-
-```
-discover
-   |
-select
-   |
-load
-   |
-execute
-```
-
-A good Skill has enough in its `description:` to be found and
-picked correctly -- without forcing its full contents into context
-on every single turn. That's the entire reason SKILL.md stays
-short and points to `metrics.md` / `report-template.md` /
-`interpretation-guidelines.md` instead of inlining them.
-
-## Skill design principles
+Design rules, short version:
 
 ```
 1. One clear job.
-2. Strong description.
-3. Encode decisions, not obvious facts.
-4. Prefer references over giant SKILL.md files.
-5. Include examples.
-6. Include boundaries.
-7. Make outputs testable.
-8. Treat Skills as code.
-```
-
-- **One clear job.** This Skill writes a weekly report. It does
-  not also triage your inbox.
-
-- **Strong description.** It's the only part loaded before the
-  Skill is selected. Vague descriptions mean the Skill never gets
-  picked, or gets picked for the wrong job.
-
-- **Encode decisions, not obvious facts.** Nobody needs a Skill to
-  know sleep happens at night. They need one to know *your team's*
-  threshold for "sleep dropped enough to mention."
-
-- **Prefer references.** metrics.md exists so SKILL.md doesn't.
-
-- **Include examples.** The DATA/OBSERVATION/INTERPRETATION block
-  in [04] is worth more than a paragraph describing the rule.
-
-- **Include boundaries.** What it must not do is as load-bearing
-  as what it must do.
-
-- **Make outputs testable.** A fixed report structure means you
-  can actually check if the Skill did its job.
-
-- **Treat Skills as code.** Version it, review it, iterate it.
-  It breaks like code, so fix it like code.
-
-## Organizational Skills
-
-```
-Today:
-
-Senior engineer
-knows how production works.
-```
-
-```
-Tomorrow:
-
-production-deployment/
-    SKILL.md
-```
-
-```
-Tribal knowledge
-      |
-Version controlled knowledge
-```
-
-Skills can capture:
-
-- engineering standards
-- deployment practices
-- architecture patterns
-- security rules
-- incident procedures
-- documentation standards
-- reporting standards
-- domain-specific workflows
-
-```
-Enterprise AI Architecture
-
-Step 1:
-Ask the senior engineer.
-
-Step 2:
-Hope they still work here.
+2. A description that says WHEN.
+3. Decisions, not obvious facts.
+4. Short SKILL.md, references for the rest.
+5. Examples and boundaries.
+6. Scripts for anything that must be exact.
+7. Test it. Fix it. Version it.
 ```
 
 
-[07] RUN IT
-=============
+[09] OTHER PATTERNS
+=====================
 
-```
-$ ./scripts/run-demo.sh
-```
-
-The Skill already produced a report in [04] -- as text, because
-nobody asked for a file. That's correct behavior, not a gap. Now
-ask for the deliverable directly:
-
-```
-Now give me that as a PDF, with charts.
-```
-
-Ideally against live Garmin MCP data. Offline fallback:
-
-```
-$ ./scripts/generate-sample-report.sh
-
-generating charts...
-assembling pdf...
-done: output/weekly-report.pdf
-```
-
-Open the result. Point at:
-
-- the report structure matching `report-template.md` exactly
-- a missing metric reported as missing, not guessed
-- grayscale, dense, no wellness-app gradients
-
-
-[08] OTHER PATTERNS
-======================
-
-Fast montage.
-
-## AWS example
-
-```
-Developer:
-"Deploy this FastAPI service to AWS."
-```
-
-Without a Skill:
-
-```
-Which compute service?
-Lambda? ECS? EKS?
-Terraform? CDK?
-Networking? Secrets?
-Observability? CI/CD?
-Naming convention?
-Environment strategy?
-```
-
-With `aws-production-deployment/`:
+Speed round.
 
 ```
 WITHOUT SKILL
 
 Developer: "Deploy this."
-AI: "Great. I have 17 questions."
-```
+AI:        "Great. I have 17 questions."
 
-```
-WITH SKILL
+
+WITH aws-production-deployment/
 
 Developer: "Deploy this."
-AI: "I know the drill."
+AI:        "I know the drill."
 ```
-
-The Skill might encode: ECS Fargate, Terraform, ALB, Secrets
-Manager, CloudWatch, GitHub Actions, dev/staging/prod, tagging
-conventions, security and networking standards.
-
-## A few more, picked short on purpose
 
 ```
 $ ls .claude/skills/
 
-garmin-weekly-performance-report/
-aws-production-deployment/
-incident-response/
-```
-
-- **incident-response** -- encodes your team's actual postmortem
-  process: who gets paged, what gets timestamped, what "resolved"
-  means before someone types it in Slack.
-- **pull-request-review** -- your team's actual review bar, not a
-  generic linter opinion. What blocks a merge here specifically.
-- **release-readiness** -- the checklist that currently lives in
-  one senior engineer's head, two days before every release.
-
-(Others worth a Skill, not covered today: architecture-review,
-jira-ticket-refinement, security-assessment, customer-onboarding,
-weekly-business-report, meeting-follow-up, postmortem-generator.)
-
-## One non-developer example
-
-```
-Without Skill:
-
-"Summarize this meeting."
+incident-response/     who gets paged, what "resolved" means
+pull-request-review/   what blocks a merge HERE
+release-readiness/     the checklist in one senior's head
+meeting-notes/         decisions, owners, due dates
 ```
 
 ```
-With engineering-meeting/:
+Today:      the senior engineer knows how production works.
 
-Decisions
-Action Items       Owner   Due Date
-Open Questions
-Technical Risks
-Architecture Changes
-Follow-ups
+Tomorrow:   production-deployment/SKILL.md
 ```
 
-Tools/MCP could then take that output and file the Jira issues or
-post the summary -- access, downstream of procedure.
-
 ```
-PROMPT ENGINEERING
+Enterprise AI Architecture, current version
 
-"Please remember all the things
-I explained yesterday."
+Step 1:  Ask the senior engineer.
+Step 2:  Hope they still work here.
 ```
 
 
-[09] THE POINT
+[10] THE POINT
 ================
 
 ```
@@ -672,5 +434,5 @@ the same thing twice.
 ```
 
 ```
-$ _
+$ exit
 ```

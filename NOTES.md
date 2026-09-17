@@ -1,309 +1,232 @@
 # Presenter notes
 
 Open this in a **separate nvim instance, on a monitor you are not
-sharing.** `WORKSHOP.md` is the only file that should ever be on
-the shared screen -- it has zero comments and zero private text by
-design. Nothing in this file is safe to mirror.
+sharing.** `WORKSHOP.md` is the only file that goes on the shared
+screen. Nothing in this file is safe to mirror.
 
-Sections below match `WORKSHOP.md`'s `[NN]` markers. Jump the same
-way: `/\[05\]`.
+Sections match `WORKSHOP.md`'s `[NN]` markers. Jump with `/\[05\]`.
+
+The whole talk is one idea: **the same prompt, three times.**
+
+```
+[02]  no Skill        -> it asks, or guesses big
+[05]  v1, by hand     -> the small table I asked for
+[07]  v2, full Skill  -> web report opens in Chromium (the win)
+```
+
+Complexity only goes up. Nobody sees `metrics.md` or a script
+before they have understood a 19-line `SKILL.md`.
 
 ---
 
-## Two-monitor setup
+## Setup
 
-- Monitor A (shared / mirrored): `nvim WORKSHOP.md`
-- Monitor B (private): `nvim NOTES.md`
-- Terminal for actually running demo commands: wherever you like,
-  but if it's on Monitor A, remember the audience sees every
-  keystroke, including typos and `cd` history. Consider a third
-  pane on Monitor B for anything you don't want narrated live
-  (e.g. staging the skill directory before [02]).
+- Monitor A (shared): `nvim WORKSHOP.md` + a terminal **inside
+  `demo/`**. Every demo command runs from there.
+- Monitor B (private): `nvim NOTES.md`.
+- Always start Claude with `../scripts/claude-demo.sh`, never plain
+  `claude`. It runs Claude inside `demo/` with only that folder's
+  config: the Garmin MCP from `demo/.mcp.json` (your real server and
+  tokens), pre-approved Garmin calls and scripts in
+  `demo/.claude/settings.json` (no permission prompts on stage), no
+  personal skills, no `~/.claude/CLAUDE.md`.
+- Why `demo/` and not the repo root: Claude Code can't read outside
+  its working folder. From the repo root, a no-skill rehearsal found
+  `skill-source/v2/`, read the whole Skill and followed it -- the
+  "no Skill" run wasn't. From `demo/` it can't see `skill-source/`,
+  `WORKSHOP.md` or these notes (verified 2026-09-16: Read, `cat`
+  and `ls ..` are all blocked).
+
+## Before the talk
+
+```
+cd demo
+../scripts/demo-reset.sh     # no skills, empty output/
+../scripts/run-demo.sh       # all [ok]
+```
+
+- Commit (or stash) everything. Claude Code shows the agent a short
+  `git status`; uncommitted renames like `skill-source/v2/...` gave
+  a no-skill rehearsal the path to try. The `demo/` boundary blocked
+  it, but don't hand out hints.
+- Close every Chromium window. First Chromium launch after boot is
+  slow: open and close it once.
+- Do the full rehearsal the day before (all three runs). Garmin
+  tokens expire; find out at home, not on stage.
+- Have `skill-source/v1/garmin-weekly-performance-report/SKILL.md`
+  open in a private buffer, in case you want to copy from it.
 
 ---
 
 ## [00] AGENDA
 
-Ten seconds, don't over-explain the agenda. Move on.
+Ten seconds. "Same prompt, three times" is the only thing to say.
 
 ## [01] WTF IS A SKILL?
 
-This is a preview, not the argument -- the argument is the next
-50 minutes. Let it feel under-explained on purpose. It lands
-harder the second time, at the close in [09].
+A preview, not the argument. Let it feel under-explained; it lands
+again at [10].
 
-## [02] WITHOUT SKILL
+## [02] NO SKILL
 
-Before this section:
+Run the prompt and let it go. Don't help it. Whatever it does is
+the point:
 
-```
-./scripts/demo-hide-skill.sh
-```
+- asks questions -> "it has to ask, because nobody wrote it down"
+- guesses -> "look how much it decided on its own: which metrics,
+  which days, the format"
 
-This deletes `.claude/skills/garmin-weekly-performance-report/` --
-the LIVE, discoverable copy. The version-controlled master lives
-at `skill-source/garmin-weekly-performance-report/` and is
-untouched.
+Don't count tool calls or time out loud. One sentence is enough:
+"lots of calls, lots of decisions, not what I wanted."
 
-Two real bugs got found rehearsing this, in order, and both are
-now fixed structurally, not just patched around:
+Rehearsal 2026-09-16 (from `demo/`): about 75 s, 23 Garmin calls
+(activities, stats, sleep, readiness), and it wrote a long markdown
+report to `output/` on its own. It may also stop for **permission
+prompts** on its date math (`python3 -c ...`, shell loops). Approve
+them; say "and now it wants to run code to figure out what 'last
+week' means".
 
-1. **A plain `skills/` folder at repo root is invisible to Claude
-   Code.** Only `.claude/skills/` is scanned. This ate 10 minutes
-   the first time -- the "with skill" run behaved exactly like
-   "without skill" because the Skill was never registered.
+If the agent says anything about a Skill or `skill-source`, stop
+and check you're in `demo/` and started it with `claude-demo.sh`.
 
-2. **A git-tracked Skill leaks through `git status`.** With the
-   Skill committed inside `.claude/skills/`, hiding it via `mv`
-   left a `D` in `git status` -- and a second rehearsal watched the
-   agent notice that, decide it looked like an accidental deletion,
-   and restore it from the last commit on its own initiative,
-   defeating the whole point of [02]. Fix: `.claude/skills/` is now
-   gitignored. The only tracked copy is `skill-source/`. Hiding and
-   restoring the live copy is now invisible to git entirely --
-   there is nothing for the agent to "helpfully" notice or fix.
+End on the "What I actually wanted" block. That's the spec for [04].
 
-If you want a sanity check before running the [02] prompt: ask
-"what skills do you have available?" and confirm
-garmin-weekly-performance-report isn't in the answer.
+## [03] ANATOMY OF A SKILL
 
-Restore it before [04]:
+Three ideas, nothing else:
 
-```
-./scripts/demo-restore-skill.sh
-```
+1. It's a folder with `SKILL.md`, and it has to be in
+   `.claude/skills/`.
+2. Frontmatter: `name` + `description`. The description says WHEN.
+3. The agent only reads name + description until a request
+   matches (progressive disclosure, without saying the words yet).
 
-This is the same pair of scripts (and the same routine) you'll use
-again around [06]. Don't fake the terminal output if something
-isn't ready (MCP down, script fails) -- say so and move on.
+"We learned that one live": an early version of this repo had the
+Skill in `skills/` at the root. Claude never saw it. Tell it if
+someone laughs; skip it if not.
 
-**On restart timing:** discovery of a newly added/removed Skill
-has been inconsistent in testing -- sometimes it's picked up within
-the same session after a bit, sometimes a call to `Skill(...)`
-returns "Unknown skill" and only works after restarting Claude Code
-in this directory. Don't build the pacing of [02]/[04] around
-either assumption. If the agent's first attempt says "Unknown
-skill," that's a fine live moment -- let it retry once, and if it
-still won't go, restart the session and continue from there without
-apologizing for it.
+## [04] BUILD ONE BY HAND
 
-Run the demo prompt live, ask nothing, let the agent's questions
-happen. Then talk through the checklist out loud (it's printed on
-screen too, so you're not reading anything the audience can't
-see):
+Type it for real in the terminal on Monitor A (not in
+`WORKSHOP.md`). The block in `WORKSHOP.md` is the recap people can
+read while you type; scroll to it after.
 
-- follow-up questions asked
-- tool calls made
-- manual instructions you had to supply
-- missing requirements exposed
-- time to result
-- format compliance
-- consistency (would you get the same shape twice in a row?)
+Narrate while typing, one line per number:
 
-Do NOT claim this proves Skills reduce token usage. That's not the
-point of the talk and it isn't measured rigorously here. If asked,
-say token counting is a curiosity, not a metric this talk is
-making claims about.
+- description: "this is how it gets picked; name the requests"
+- 1: which days, and the escape hatch for "last 3 days"
+- 2: which calls, and "nothing else" -- that's what keeps it fast
+- 3: the shape
+- 4: never invent a number
+- 5: the boundary
 
-If you want real numbers on record afterward (not during the
-talk), fill `demo/without-skill.md` from memory right after this
-section ends, while it's fresh -- on Monitor B, not live.
-
-## [03] MCP VS SKILL
-
-If someone asks "isn't a Skill just a big prompt" -- answer here,
-don't defer it. A Skill can hold instructions, procedures,
-references, examples, templates, and scripts. A prompt is one
-message. Point back at the file tree in [04]/[05] as the proof.
-
-## [04] WITH SKILL
-
-Same prompt as [02], character for character. If you catch
-yourself improving the wording, stop -- you'd be demoing a better
-prompt, not a Skill.
-
-After it runs, narrate the same seven-item checklist from [02]
-against this run. That spoken comparison IS the demo. Don't retype
-it into a file live -- it kills the pacing and there's nothing to
-gain from watching you type into a table.
-
-If the demo goes badly (agent still asks something, misses a
-threshold, whatever): say so. That's a better teaching moment than
-a smooth fake one. Skills failing loudly when they're wrong is the
-correct behavior, not an embarrassment.
-
-Fill `demo/with-skill.md` and `demo/comparison.md` afterward, on
-Monitor B or after the talk, if you want the numbers on record.
-
-## [05] INSPECT THE SKILL
-
-Actually do this. Stop presenting, open the real file. You're now
-inside the object you were describing a minute ago -- that
-transition is the whole reason this format beats slides. Take your
-time. Walk `metrics.md` and `interpretation-guidelines.md` too if
-the room has appetite for it.
-
-## [06] BUILD ONE
-
-This section rebuilds the exact same Skill you already used in
-[04] and inspected in [05] -- from scratch, by copy-paste, not from
-memory. Do not try to compose SKILL.md's prose live; you will
-either run long or write something worse than what's already
-written. The whole point of prepared fragments is that the *typing*
-risk is gone and only the *narration* is live.
-
-**Setup, right before the section starts** (same pair of scripts as
-[02]):
+Typos in the frontmatter break discovery. If typing goes badly,
+don't fix it live:
 
 ```
-./scripts/demo-hide-skill.sh
+../scripts/install-skill.sh v1
 ```
 
-`.claude/skills/` is empty again -- `git status` shows nothing,
-same as [02]. The version-controlled original is untouched at
-`skill-source/garmin-weekly-performance-report/`.
+Then exit Claude and restart with `../scripts/claude-demo.sh`.
+**Always restart after changing what's installed**; mid-session
+discovery has been inconsistent in testing.
 
-**The build, in order.** Fragments live in `demo/build-along/` and
-are meant to be pulled in with nvim's `:r` (read-file-into-buffer),
-not retyped. After each `:r`, hit `G` (go to end of buffer) before
-the next one so they land in the right place; don't sweat exact
-blank-line spacing, nobody's diffing this live.
+## [05] TEST IT, FIX IT
 
-```
-$ mkdir -p .claude/skills/garmin-weekly-performance-report
-$ touch .claude/skills/garmin-weekly-performance-report/SKILL.md
-$ nvim .claude/skills/garmin-weekly-performance-report/SKILL.md
-```
+Same prompt, then the "last 3 days" one. Point at the difference
+qualitatively (no questions, small, exact shape).
 
-1. `:r demo/build-along/01-job-and-trigger.md`
-   -- frontmatter, the job, the trigger phrases. Say why the
-   `description:` field matters (it's what [06]'s progressive
-   disclosure bit is about, coming up next).
+Rehearsal 2026-09-16: last week took about 23 s and 14 calls; last
+3 days about 18 s and 6 calls. Both printed exactly the table.
 
-2. `:r demo/build-along/02-period-and-data.md`
-   -- period, comparison windows, what to pull, "don't fabricate."
-
-3. Save and quit SKILL.md for a moment. Bring in the reference
-   files wholesale -- these aren't typed live either, they're
-   copied straight from the backup, same as the scripts will be:
-
-   ```
-   $ cp skill-source/garmin-weekly-performance-report/metrics.md \
-        .claude/skills/garmin-weekly-performance-report/metrics.md
-   $ cp skill-source/garmin-weekly-performance-report/report-template.md \
-        .claude/skills/garmin-weekly-performance-report/report-template.md
-   $ cp skill-source/garmin-weekly-performance-report/interpretation-guidelines.md \
-        .claude/skills/garmin-weekly-performance-report/interpretation-guidelines.md
-   ```
-
-   Open `interpretation-guidelines.md` briefly and point at the
-   DATA/OBSERVATION/INTERPRETATION example -- this is "add examples"
-   in the progression, and you already have a real one on disk.
-
-4. Back in `SKILL.md`:
-   `:r demo/build-along/03-how-to-build-and-charts.md`
-   -- this is the step that actually points at metrics.md,
-   report-template.md, interpretation-guidelines.md, and the
-   scripts. It's the wiring, not just a pile of files.
-
-5. `:r demo/build-along/04-boundaries.md`
-   -- "define what not to do." Read one or two bullets out loud.
-
-6. Scripts, copied wholesale, not typed -- chart/PDF code isn't
-   something you compose live any more than the reference docs are:
-
-   ```
-   $ mkdir .claude/skills/garmin-weekly-performance-report/scripts
-   $ cp skill-source/garmin-weekly-performance-report/scripts/*.py \
-        .claude/skills/garmin-weekly-performance-report/scripts/
-   ```
-
-7. `:r demo/build-along/05-files-in-this-skill.md`
-   -- closing section, "iterate" as an explicit habit, not a
-   one-time step. Save.
-
-8. **Test.** Run the prompt from [02]/[04] again. It should behave
-   the same as [04]. If the agent says "Unknown skill," retry once
-   or twice (see the discovery-timing note in [02]) before
-   restarting Claude Code. A genuine content difference from [04]
-   is a real, live "iterate" moment, not a failure.
-
-**If you're behind schedule when you reach [06]:** skip straight to
+**The planned live fix is real:** in rehearsal the 7-day average
+row came out as whole numbers in bold, the 3-day one as `69.7`
+without bold. Point at it, then add to step 3:
 
 ```
-./scripts/demo-restore-skill.sh
+   Averages: whole numbers, no bold.
 ```
 
-and walk the finished `.claude/skills/garmin-weekly-performance-report/`
-directory instead of doing the live build. This is a legitimate,
-pre-planned fallback, not a failure -- use it decisively rather than
-rushing the live-coding and running even further behind.
+Restart, rerun "last 3 days". Other ideas if there's time:
 
-**If the live build finishes normally:** you don't need to run
-`demo-restore-skill.sh` at all -- what you just built by hand *is*
-the real thing, byte-for-byte, ready for [07].
+- add "Sort newest day first." to step 3
+- add "Mark sleep scores below 60 with (!)." to step 3
 
-## [07] RUN IT
+If something genuinely goes wrong in the run (wrong days, extra
+text), that's better: fix the line that caused it, live.
 
-`SKILL.md` only generates a PDF "if the user wants a PDF" -- on
-purpose, so it doesn't produce files nobody asked for. The vague
-prompt from [02]/[04] never asks for one, so [04] correctly ends
-with a text report, not a file. Don't read that as a gap live --
-say it out loud as intentional, then ask for the file:
+## [06] MCP VS SKILL
 
-```
-Now give me that as a PDF, with charts.
-```
+Now it's concrete: they just watched the Skill pick 2 of the MCP's
+tools and ignore the rest. Point back at step 2 of the file.
 
-That's the actual payoff of this section: a real request produces
-a real, polished deliverable, still governed by the same Skill.
+If someone asks "isn't a Skill just a big prompt?": a prompt is one
+message you retype. A Skill is a file that's picked automatically,
+can bring references and scripts, and is versioned. [07] shows the
+"references and scripts" part.
 
-Prefer live Garmin MCP data here if it's working. Fallback:
+## [07] LEVEL UP
 
-```
-./scripts/generate-sample-report.sh
-```
+`install-skill.sh v2` replaces v1 in the same folder: same name,
+version 2. Don't install both side by side; they'd both match the
+prompt and the agent could pick either.
 
-That script's report text is rule-based (thresholds and templated
-phrasing), not the model actually reasoning through
-`interpretation-guidelines.md`. Say so if anyone opens the PDF and
-asks why the language feels flatter than the live demo's. It's a
-rehearsal/fallback tool, not a stand-in for the real thing.
+Show the tree, one sentence per file, then run. It takes about
+3 minutes (rehearsal 2026-09-17: 179 s, 22 Garmin calls, no
+permission prompts). While it runs, talk through [08]'s first bullet
+(references), then come back when Chromium opens.
 
-## [08] OTHER PATTERNS
+When the page opens, give it room:
 
-Fast montage, on purpose. Don't build the AWS example live unless
-you're ahead of schedule -- it's there to show the pattern
-generalizes past fitness data, not to be a second full demo.
+- the big number, then scroll
+- hover a chart
+- the notable days grid: hover a yellow `!`
+- the DATA / OBSERVATION / INTERPRETATION cards
 
-If you're short on time, this whole section can shrink to: the AWS
-before/after joke, and one of the three bullet Skills. Cut the
-meeting example first if something has to go.
+The PDF still exists ("Now give me that as a PDF, with charts."),
+but skip it unless someone asks.
 
-## [09] THE POINT
+## [08] WHY THE EXTRA FILES
 
-Let the closing lines sit. Don't add anything after
-`Don't teach the AI the same thing twice.` -- the `$ _` is the
-actual ending, not a segue into more talking.
+The rehearsal stories on screen are real (2026-09-16):
+
+- Saturday/Sunday: the model's prose said the runs were on
+  "Saturday, Sep 13"; the data and chart said Sunday. The new check
+  is the last bullet of `interpretation-guidelines.md`.
+- Eleven minutes -> three: the first version of the full Skill
+  fetched 4 weeks of per-day data (85 calls, ~150 KB of raw sleep
+  data per night). Asking for 7 days and Garmin's summary tools:
+  22 calls, about 3 minutes including building and opening the web
+  page.
+
+Keep numbers to those two sentences. If someone wants details:
+`skill-source/v2/.../SKILL.md`, "Data to retrieve".
+
+## [09] OTHER PATTERNS
+
+Speed round. Cut this first if you're late.
+
+## [10] THE POINT
+
+Let the closing lines sit. `$ exit` is the ending.
 
 ---
 
 ## If something breaks
 
-- Garmin MCP unreachable: switch to
-  `./scripts/generate-sample-report.sh` for [07], and for [02]/[04]
-  just talk through what *would* happen using this file's
-  checklist -- don't fake tool output on the shared screen.
-- Skill directory missing when you meant to restore it before
-  [04]: run `./scripts/demo-restore-skill.sh`. If that also fails,
-  the master copy is safe and version-controlled at
-  `skill-source/garmin-weekly-performance-report/` regardless of
-  what's happened to `.claude/skills/` -- worst case, copy it by
-  hand: `cp -r skill-source/garmin-weekly-performance-report .claude/skills/`.
-- Agent says "Unknown skill" right after a restore: retry the
-  request once or twice before restarting Claude Code. Discovery
-  timing has been inconsistent in testing -- don't assume it's
-  broken on the first try.
-- Running long: cut in this order -- [08] montage, [06] live
-  edit-run-fix loop, [07] live MCP run (use the offline script
-  instead).
+- **Garmin MCP won't connect** (`/mcp` shows it failed): check
+  `~/.garminconnect` exists and `~/lab/garmin_mcp` is where
+  `demo/.mcp.json` expects it. For [07], fall back to
+  `../scripts/generate-sample-report.sh` (synthetic data, opens the
+  web page). For [02]/[05], talk through what would happen; don't
+  fake output.
+- **"Unknown skill"** or the old version runs: you didn't restart.
+  Exit, `../scripts/claude-demo.sh`, same prompt.
+- **Chromium doesn't open:** the page is `output/weekly-report.html`;
+  open it by hand with `chromium output/weekly-report.html`.
+- **Pane closes when running a script:** you typed a leading dot
+  (`. ../scripts/...`). The scripts refuse to be sourced now, but a
+  shell that sourced one earlier may still have `set -e` on. Open a
+  new pane.
+- **Running long:** cut [09], then the live fix in [05], then
+  shorten the page tour in [07].
