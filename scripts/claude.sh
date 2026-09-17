@@ -11,6 +11,9 @@
 #   - Skills:  demo/.claude/skills/ only, and none at all while the
 #              folder is empty (built-in skills like dataviz would
 #              otherwise steer the no-Skill run towards charts)
+#   - Denied:  the Artifact tools and the web, so the no-Skill run
+#              can't publish a designed page to claude.ai (it did,
+#              with real health data) and nothing leaves the laptop
 #   - MCP:     demo/.mcp.json (the real Garmin MCP server)
 #   - Rules:   below, plus scripts/skill-guard.sh
 # Extra arguments are passed through to claude (e.g. -p "...").
@@ -47,7 +50,14 @@ SETTINGS="$(cat <<JSON
       "Bash(.claude/skills/garmin-weekly-performance-report/scripts/open_in_chrome.sh:*)",
       "Edit(./output/**)"
     ],
-    "deny": ["Read(../**)"]
+    "deny": [
+      "Read(../**)",
+      "Artifact",
+      "ArtifactComments",
+      "ArtifactData",
+      "WebFetch",
+      "WebSearch"
+    ]
   },
   "hooks": {
     "PreToolUse": [

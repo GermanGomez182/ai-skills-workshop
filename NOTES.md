@@ -36,6 +36,13 @@ before they have understood a 19-line `SKILL.md`.
   `demo/.claude/settings.json`, saw the allow-list naming
   `generate_html.py` and `open_in_chrome.sh`, and hand-built an HTML
   report during the "no Skill" run.
+- **The Artifact tools and the web are denied.** With skills off,
+  the no-skill run reached for the next best thing: it built a page
+  and published it to claude.ai (real health data, external
+  service), which also spent the [07] payoff. `Artifact`,
+  `ArtifactComments`, `ArtifactData`, `WebFetch` and `WebSearch` are
+  denied in the launcher, so nothing leaves the laptop and the web
+  report stays v2's alone.
 - **Built-in skills are off.** Claude Code ships its own
   (`dataviz`, `artifact-design`, ...) and a rehearsal watched the
   no-skill run use them to hand-build a designed report -- so "no
@@ -98,10 +105,12 @@ the point:
 Don't count tool calls or time out loud. One sentence is enough:
 "lots of calls, lots of decisions, not what I wanted."
 
-Rehearsal 2026-09-17: 74 s, 17 Garmin calls, and it wrote a long
-markdown report to `output/` that nobody asked for. It also picked
-its own week (Thu-Wed, a rolling 7 days) where v2 uses Mon-Sun.
-Point at that: "which days?" was one of the guesses.
+Rehearsal 2026-09-17: 56 s, 16 Garmin calls, and a long markdown
+report dumped straight into the terminal. It picked its own week
+(Thu-Wed, a rolling 7 days) where v2 uses Mon-Sun: point at that,
+"which days?" was one of the guesses. Earlier rehearsals, before the
+Artifact tools were denied, published a designed page to claude.ai
+instead -- if you ever see that, the launcher isn't the one running.
 
 It may stop for **permission prompts** on its date math (`python3
 -c ...`, shell loops). Approve them; say "and now it wants to run

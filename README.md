@@ -79,6 +79,11 @@ passes `--disable-slash-commands`; afterwards a PreToolUse hook
 uses them to hand-build a designed report, which is neither "no
 Skill" nor a fair comparison.
 
+The `Artifact` tools and web access are denied as well: with skills
+off, one rehearsal built a page and published it to claude.ai --
+real health data on an external service, and the [07] payoff spent
+early.
+
 Permissions are passed on the command line rather than written into
 `demo/`: the agent reads anything in its working folder, and an
 allow-list naming `generate_html.py` told one rehearsal exactly what
