@@ -36,8 +36,7 @@ skills-workshop/
 +-- WORKSHOP-SLIDES.md        <- optional Marp version
 |
 +-- demo/                     <- the "empty project" Claude runs in
-|   +-- .mcp.json             <- Garmin MCP server
-|   +-- .claude/settings.json <- pre-approved Garmin calls + scripts
+|   +-- .mcp.json             <- Garmin MCP server (all there is)
 |   +-- .claude/skills/       <- installed Skill (untracked)
 |   +-- output/               <- reports land here (untracked)
 |   +-- .venv -> ../.venv     <- Python for the v2 scripts
@@ -73,12 +72,17 @@ Garmin MCP from `demo/.mcp.json` (the real server at
 `~/lab/garmin_mcp`, tokens in `~/.garminconnect`).
 
 Claude Code's own built-in skills (`dataviz`, `artifact-design`,
-...) are blocked as well: a PreToolUse hook
+...) are off as well. While no Skill is installed the launcher
+passes `--disable-slash-commands`; afterwards a PreToolUse hook
 (`scripts/only-our-skill.sh`) allows only the installed
 `garmin-weekly-performance-report`. Otherwise the "no Skill" run
-uses them to hand-build a report, which is neither "no Skill" nor a
-fair comparison. `demo/.claude/settings.json` also denies reading
-`../**`, so the agent can't wander into the talk's own files.
+uses them to hand-build a designed report, which is neither "no
+Skill" nor a fair comparison.
+
+Permissions are passed on the command line rather than written into
+`demo/`: the agent reads anything in its working folder, and an
+allow-list naming `generate_html.py` told one rehearsal exactly what
+deliverable was expected. Reads of `../**` are denied too.
 
 A Skill is only discovered in `.claude/skills/<name>/SKILL.md`. After
 installing or changing one, restart Claude.

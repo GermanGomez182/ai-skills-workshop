@@ -25,21 +25,28 @@ before they have understood a 19-line `SKILL.md`.
   `demo/`**. Every demo command runs from there.
 - Monitor B (private): `nvim NOTES.md`.
 - Always start Claude with `../scripts/claude-demo.sh`, never plain
-  `claude`. It runs Claude inside `demo/` with only that folder's
-  config: the Garmin MCP from `demo/.mcp.json` (your real server and
-  tokens), pre-approved Garmin calls and scripts in
-  `demo/.claude/settings.json` (no permission prompts on stage), no
-  personal skills, no `~/.claude/CLAUDE.md`.
-- **Built-in skills are blocked too.** Claude Code ships its own
+  `claude`. It runs Claude inside `demo/` and passes everything else
+  on the command line: the Garmin MCP from `demo/.mcp.json` (your
+  real server and tokens), pre-approved Garmin calls and scripts (no
+  permission prompts on stage), no personal skills, no
+  `~/.claude/CLAUDE.md`.
+- `demo/` holds only `.mcp.json`, `output/` and the `.venv` link.
+  Settings are *not* written there on purpose: the agent can read
+  anything in its working folder, and a rehearsal read
+  `demo/.claude/settings.json`, saw the allow-list naming
+  `generate_html.py` and `open_in_chrome.sh`, and hand-built an HTML
+  report during the "no Skill" run.
+- **Built-in skills are off.** Claude Code ships its own
   (`dataviz`, `artifact-design`, ...) and a rehearsal watched the
   no-skill run use them to hand-build a designed report -- so "no
-  Skill" wasn't true, and it spent the [07] payoff early. A
-  PreToolUse hook (`scripts/only-our-skill.sh`, kept outside `demo/`
-  so the agent can't read it) allows only
-  `garmin-weekly-performance-report` and answers everything else
-  with "Skills are not available in this project". The same rule
-  applies to all three runs, so the only difference between them is
-  our Skill.
+  Skill" wasn't true, and it spent the [07] payoff early. Two
+  measures: while no Skill is installed the launcher passes
+  `--disable-slash-commands`, so the Skill tool doesn't exist at all
+  and not even those descriptions are in context; once one is
+  installed, a PreToolUse hook (`scripts/only-our-skill.sh`, outside
+  `demo/` so the agent can't read it) allows only
+  `garmin-weekly-performance-report`. Same rule for all three runs:
+  the only difference between them is our Skill.
 - `demo/.claude/settings.json` also denies reading `../**`, so the
   agent never asks for `WORKSHOP.md` or these notes on stage.
 - Why `demo/` and not the repo root: Claude Code can't read outside
@@ -91,18 +98,17 @@ the point:
 Don't count tool calls or time out loud. One sentence is enough:
 "lots of calls, lots of decisions, not what I wanted."
 
-Rehearsals: 75-155 s, around 20 Garmin calls, and it invents an
-output every time -- a long markdown file, or hand-written HTML in
-`output/`. That's the point: it guesses, and it guesses big.
+Rehearsal 2026-09-17: 74 s, 17 Garmin calls, and it wrote a long
+markdown report to `output/` that nobody asked for. It also picked
+its own week (Thu-Wed, a rolling 7 days) where v2 uses Mon-Sun.
+Point at that: "which days?" was one of the guesses.
 
 It may stop for **permission prompts** on its date math (`python3
 -c ...`, shell loops). Approve them; say "and now it wants to run
 code to figure out what 'last week' means".
 
-If it tries a built-in skill, the hook answers "Skills are not
-available in this project" and it carries on by hand. Worth saying
-out loud: "even the tools it would normally reach for are off --
-this is the model on its own."
+There are no skills at all in this run, so nothing steers it: what
+you see is the model on its own.
 
 If the agent says anything about a Skill or `skill-source`, stop
 and check you're in `demo/` and started it with `claude-demo.sh`.
