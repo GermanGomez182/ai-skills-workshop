@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "garmin": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["--directory", "${HOME}/lab/garmin_mcp", "run", "--locked", "garmin-mcp"],
+      "env": {
+        "GARMIN_ENABLED_TOOLS": "get_activities_by_date,get_sleep_summary,get_stats,get_training_readiness,get_user_profile",
+        "GARMINTOKENS": "${HOME}/.garminconnect",
+        "UV_CACHE_DIR": "/tmp/uv-cache"
+      }
+    }
+  }
+}

@@ -2,12 +2,11 @@
 __pycache__/
 *.pyc
 
-output/*
-!output/.gitkeep
+demo/output/*
+!demo/output/.gitkeep
 
-# The live, discoverable copy of the Skill. Never tracked here on
-# purpose -- see skill-source/ for the version-controlled master.
-# Keeping this untracked means hiding/restoring it during the demo
-# never shows up in `git status`, so nothing invites an agent to
-# "helpfully" restore it from git history mid-demo.
-.claude/skills/
+# The installed copy of the Skill, inside the demo project. Never
+# tracked: skill-source/ holds the versions, scripts/install-skill.sh
+# copies one in. Untracked means reset/install never shows up in
+# `git status`, so nothing invites the agent to "restore" it.
+demo/.claude/skills/

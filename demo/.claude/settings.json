@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__garmin__get_activities_by_date",
+      "mcp__garmin__get_sleep_summary",
+      "mcp__garmin__get_stats",
+      "mcp__garmin__get_training_readiness",
+      "mcp__garmin__get_user_profile",
+      "Bash(.venv/bin/python .claude/skills/garmin-weekly-performance-report/scripts/generate_charts.py:*)",
+      "Bash(.venv/bin/python .claude/skills/garmin-weekly-performance-report/scripts/generate_pdf.py:*)",
+      "Bash(python3 .claude/skills/garmin-weekly-performance-report/scripts/generate_html.py:*)",
+      "Bash(.claude/skills/garmin-weekly-performance-report/scripts/open_in_chrome.sh:*)",
+      "Edit(./output/**)"
+    ]
+  }
+}
