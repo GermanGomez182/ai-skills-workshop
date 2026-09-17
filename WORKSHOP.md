@@ -92,13 +92,6 @@ Claude Code, connected to my real Garmin account through an MCP
 server. It can read my activities, sleep, heart rate, stress,
 training readiness. Real data.
 
-
-
-```
-Create a report about my last week.
-```
-
-
 The prompt. Deliberately vague, like every real request:
 
 ```
@@ -169,7 +162,11 @@ So the description is the most important line in the file.
 [04] BUILD ONE BY HAND
 ========================
 
+Inside `demo/`, the empty project. A Skill only counts if it lives
+in `.claude/skills/<name>/`, next to the project it serves:
+
 ```
+$ cd demo
 $ mkdir -p .claude/skills/garmin-weekly-performance-report
 $ nvim .claude/skills/garmin-weekly-performance-report/SKILL.md
 ```

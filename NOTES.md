@@ -175,21 +175,34 @@ qualitatively (no questions, small, exact shape).
 Rehearsal 2026-09-16: last week took about 23 s and 14 calls; last
 3 days about 18 s and 6 calls. Both printed exactly the table.
 
-**The planned live fix is real:** in rehearsal the 7-day average
-row came out as whole numbers in bold, the 3-day one as `69.7`
-without bold. Point at it, then add to step 3:
+**The fix is real, pick it off the screen.** Checked again on
+2026-09-17 with the file exactly as typed here, two runs back to
+back:
+
+```
+last week:    | **Average** | **54** | **67** |   <- bold
+last 3 days:  | Average | 54 | 68 |               <- not bold
+```
+
+Both printed the day as `2026-09-10`, never `Mon 10`: step 3 never
+says what the Day column looks like. So there are two honest fixes,
+either one is a one-liner in step 3:
 
 ```
    Averages: whole numbers, no bold.
 ```
 
-Restart, rerun "last 3 days". Other ideas if there's time:
+```
+   Day column: weekday and day number, like "Mon 10".
+```
 
-- add "Sort newest day first." to step 3
-- add "Mark sleep scores below 60 with (!)." to step 3
+Say the lesson: "same shape every time" is what we wanted, and the
+Skill didn't quite say it. Then save, exit Claude,
+`../scripts/claude.sh`, same prompt. The restart is part of it --
+the Skill is read from disk, not from the conversation.
 
-If something genuinely goes wrong in the run (wrong days, extra
-text), that's better: fix the line that caused it, live.
+If the run goes wrong on its own (wrong days, extra text), use that
+instead: fix the line that caused it, live.
 
 ## [06] MCP VS SKILL
 

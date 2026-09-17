@@ -15,5 +15,6 @@ set -euo pipefail
 DEMO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../demo" && pwd)"
 
 rm -rf "${DEMO_DIR:?}/.claude/skills"
+rmdir "$DEMO_DIR/.claude" 2>/dev/null || true
 find "$DEMO_DIR/output" -mindepth 1 -not -name .gitkeep -delete
 echo "[ok] no skills installed, output/ is empty"
