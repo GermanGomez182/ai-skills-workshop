@@ -72,6 +72,14 @@ personal skills, no `~/.claude/CLAUDE.md`, no user hooks, and the
 Garmin MCP from `demo/.mcp.json` (the real server at
 `~/lab/garmin_mcp`, tokens in `~/.garminconnect`).
 
+Claude Code's own built-in skills (`dataviz`, `artifact-design`,
+...) are blocked as well: a PreToolUse hook
+(`scripts/only-our-skill.sh`) allows only the installed
+`garmin-weekly-performance-report`. Otherwise the "no Skill" run
+uses them to hand-build a report, which is neither "no Skill" nor a
+fair comparison. `demo/.claude/settings.json` also denies reading
+`../**`, so the agent can't wander into the talk's own files.
+
 A Skill is only discovered in `.claude/skills/<name>/SKILL.md`. After
 installing or changing one, restart Claude.
 

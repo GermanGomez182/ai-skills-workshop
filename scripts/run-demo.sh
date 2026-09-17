@@ -33,6 +33,21 @@ else
   echo "[!!] no Garmin tokens in ~/.garminconnect -- the MCP server won't connect"
 fi
 
+# Start the MCP server once so uv and the Garmin login are warm: from
+# cold it has taken longer than Claude Code waits, and the first run
+# of the talk then fails with CONNECT_TIMEOUT.
+echo -n "[..] warming up the Garmin MCP server (up to 90s)... "
+WARMUP="$(GARMIN_ENABLED_TOOLS=get_user_profile \
+  GARMINTOKENS="$HOME/.garminconnect" \
+  UV_CACHE_DIR=/tmp/uv-cache \
+  timeout 90 uv --directory "$HOME/lab/garmin_mcp" run --locked garmin-mcp </dev/null 2>&1 || true)"
+
+case "$WARMUP" in
+  *"client initialized successfully"*) echo "ok" ;;
+  *) echo "FAILED -- re-auth or check ~/lab/garmin_mcp before the talk"
+     echo "$WARMUP" | tail -3 ;;
+esac
+
 cat <<'BEATS'
 
 The prompt, identical all three times:

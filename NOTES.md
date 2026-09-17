@@ -30,6 +30,18 @@ before they have understood a 19-line `SKILL.md`.
   tokens), pre-approved Garmin calls and scripts in
   `demo/.claude/settings.json` (no permission prompts on stage), no
   personal skills, no `~/.claude/CLAUDE.md`.
+- **Built-in skills are blocked too.** Claude Code ships its own
+  (`dataviz`, `artifact-design`, ...) and a rehearsal watched the
+  no-skill run use them to hand-build a designed report -- so "no
+  Skill" wasn't true, and it spent the [07] payoff early. A
+  PreToolUse hook (`scripts/only-our-skill.sh`, kept outside `demo/`
+  so the agent can't read it) allows only
+  `garmin-weekly-performance-report` and answers everything else
+  with "Skills are not available in this project". The same rule
+  applies to all three runs, so the only difference between them is
+  our Skill.
+- `demo/.claude/settings.json` also denies reading `../**`, so the
+  agent never asks for `WORKSHOP.md` or these notes on stage.
 - Why `demo/` and not the repo root: Claude Code can't read outside
   its working folder. From the repo root, a no-skill rehearsal found
   `skill-source/v2/`, read the whole Skill and followed it -- the
@@ -79,12 +91,18 @@ the point:
 Don't count tool calls or time out loud. One sentence is enough:
 "lots of calls, lots of decisions, not what I wanted."
 
-Rehearsal 2026-09-16 (from `demo/`): about 75 s, 23 Garmin calls
-(activities, stats, sleep, readiness), and it wrote a long markdown
-report to `output/` on its own. It may also stop for **permission
-prompts** on its date math (`python3 -c ...`, shell loops). Approve
-them; say "and now it wants to run code to figure out what 'last
-week' means".
+Rehearsals: 75-155 s, around 20 Garmin calls, and it invents an
+output every time -- a long markdown file, or hand-written HTML in
+`output/`. That's the point: it guesses, and it guesses big.
+
+It may stop for **permission prompts** on its date math (`python3
+-c ...`, shell loops). Approve them; say "and now it wants to run
+code to figure out what 'last week' means".
+
+If it tries a built-in skill, the hook answers "Skills are not
+available in this project" and it carries on by hand. Worth saying
+out loud: "even the tools it would normally reach for are off --
+this is the model on its own."
 
 If the agent says anything about a Skill or `skill-source`, stop
 and check you're in `demo/` and started it with `claude-demo.sh`.
@@ -94,6 +112,9 @@ End on the "What I actually wanted" block. That's the spec for [04].
 ## [03] ANATOMY OF A SKILL
 
 Three ideas, nothing else:
+
+Typically defined by a SKILL.md file containing YAML metadata and Markdown instructions, skills allow agents to load domain-specific procedural knowledge on demand rather than upfront, keeping context windows lean and ensuring consistent, repeatable outputs
+
 
 1. It's a folder with `SKILL.md`, and it has to be in
    `.claude/skills/`.
@@ -208,8 +229,8 @@ Speed round. Cut this first if you're late.
 
 ## [10] THE POINT
 
-Let the closing lines sit. `$ exit` is the ending.
 
+Agent skills are modular, reusable packages of instructions, metadata, and optional resources (such as scripts or templates) that give AI agents specialized capabilities for specific tasks. 
 ---
 
 ## If something breaks

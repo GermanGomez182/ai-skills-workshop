@@ -18,6 +18,11 @@ set -euo pipefail
 DEMO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../demo" && pwd)"
 cd "$DEMO_DIR"
 
+# The Garmin MCP server starts uv and logs in to Garmin Connect; from
+# cold that has taken more than Claude Code's default 30s and failed
+# with CONNECT_TIMEOUT. Give it room.
+export MCP_TIMEOUT="${MCP_TIMEOUT:-90000}"
+
 exec claude \
   --setting-sources project,local \
   --settings "{\"claudeMdExcludes\":[\"$HOME/.claude/CLAUDE.md\"]}" \
