@@ -3,7 +3,7 @@
 # line and prints the beats. Run it before the talk, on your notes
 # monitor -- not on the screen you're sharing.
 if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
-  echo "[!!] don't source this (no leading dot), run it: scripts/run-demo.sh" >&2
+  echo "[!!] don't source this (no leading dot), run it: scripts/preflight.sh" >&2
   return 1
 fi
 
@@ -16,13 +16,13 @@ echo "=== AI Skills Workshop: pre-flight ==="
 echo
 
 if [ -d "$DEMO_DIR/.claude/skills/garmin-weekly-performance-report" ]; then
-  echo "[!!] a skill is installed in demo/ -- run scripts/demo-reset.sh before [02]"
+  echo "[!!] a skill is installed in demo/ -- run scripts/reset.sh before [02]"
 else
   echo "[ok] no skill installed in demo/"
 fi
 
 if [ -n "$(find "$DEMO_DIR/output" -mindepth 1 -not -name .gitkeep -print -quit)" ]; then
-  echo "[!!] demo/output/ has files from a previous run -- run scripts/demo-reset.sh"
+  echo "[!!] demo/output/ has files from a previous run -- run scripts/reset.sh"
 else
   echo "[ok] demo/output/ is empty"
 fi
@@ -56,13 +56,13 @@ The prompt, identical all three times:
 
 The beats (terminal inside demo/):
 
-  [02] ../scripts/demo-reset.sh
-       ../scripts/claude-demo.sh             run the prompt -> no skill
+  [02] ../scripts/reset.sh
+       ../scripts/claude.sh             run the prompt -> no skill
   [04] type the v1 SKILL.md                  (safety net: ../scripts/install-skill.sh v1)
-       exit, ../scripts/claude-demo.sh       run the prompt -> small table
+       exit, ../scripts/claude.sh       run the prompt -> small table
   [05] "Create a report about my last 3 days."
   [07] ../scripts/install-skill.sh v2
-       exit, ../scripts/claude-demo.sh       run the prompt -> web report opens
+       exit, ../scripts/claude.sh       run the prompt -> web report opens
 
-Offline fallback (no Garmin): ../scripts/generate-sample-report.sh
+Offline fallback (no Garmin): ../scripts/offline-report.sh
 BEATS

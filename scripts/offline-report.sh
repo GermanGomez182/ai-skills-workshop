@@ -7,10 +7,10 @@
 # not the model's actual interpretation -- see the docstring in
 # generate_pdf.py. The live demo, with the agent actually reading
 # interpretation-guidelines.md, is the real thing.
-# Sourcing (". ./scripts/generate-sample-report.sh") would run `set -e` and `exit`
+# Sourcing (". ./scripts/offline-report.sh") would run `set -e` and `exit`
 # inside your own shell and close the terminal/tmux pane. Refuse.
 if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
-  echo "[!!] don't source this (no leading dot), run it: scripts/generate-sample-report.sh" >&2
+  echo "[!!] don't source this (no leading dot), run it: scripts/offline-report.sh" >&2
   return 1
 fi
 

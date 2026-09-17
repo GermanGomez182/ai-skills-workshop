@@ -6,7 +6,7 @@
 #
 # Output is shown on the shared screen: keep it short and relative.
 if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
-  echo "[!!] don't source this (no leading dot), run it: scripts/demo-reset.sh" >&2
+  echo "[!!] don't source this (no leading dot), run it: scripts/reset.sh" >&2
   return 1
 fi
 

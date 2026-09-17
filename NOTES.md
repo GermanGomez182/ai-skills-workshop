@@ -24,7 +24,7 @@ before they have understood a 19-line `SKILL.md`.
 - Monitor A (shared): `nvim WORKSHOP.md` + a terminal **inside
   `demo/`**. Every demo command runs from there.
 - Monitor B (private): `nvim NOTES.md`.
-- Always start Claude with `../scripts/claude-demo.sh`, never plain
+- Always start Claude with `../scripts/claude.sh`, never plain
   `claude`. It runs Claude inside `demo/` and passes everything else
   on the command line: the Garmin MCP from `demo/.mcp.json` (your
   real server and tokens), pre-approved Garmin calls and scripts (no
@@ -43,7 +43,7 @@ before they have understood a 19-line `SKILL.md`.
   measures: while no Skill is installed the launcher passes
   `--disable-slash-commands`, so the Skill tool doesn't exist at all
   and not even those descriptions are in context; once one is
-  installed, a PreToolUse hook (`scripts/only-our-skill.sh`, outside
+  installed, a PreToolUse hook (`scripts/skill-guard.sh`, outside
   `demo/` so the agent can't read it) allows only
   `garmin-weekly-performance-report`. Same rule for all three runs:
   the only difference between them is our Skill.
@@ -60,8 +60,8 @@ before they have understood a 19-line `SKILL.md`.
 
 ```
 cd demo
-../scripts/demo-reset.sh     # no skills, empty output/
-../scripts/run-demo.sh       # all [ok]
+../scripts/reset.sh     # no skills, empty output/
+../scripts/preflight.sh       # all [ok]
 ```
 
 - Commit (or stash) everything. Claude Code shows the agent a short
@@ -111,7 +111,7 @@ There are no skills at all in this run, so nothing steers it: what
 you see is the model on its own.
 
 If the agent says anything about a Skill or `skill-source`, stop
-and check you're in `demo/` and started it with `claude-demo.sh`.
+and check you're in `demo/` and started it with `claude.sh`.
 
 End on the "What I actually wanted" block. That's the spec for [04].
 
@@ -154,7 +154,7 @@ don't fix it live:
 ../scripts/install-skill.sh v1
 ```
 
-Then exit Claude and restart with `../scripts/claude-demo.sh`.
+Then exit Claude and restart with `../scripts/claude.sh`.
 **Always restart after changing what's installed**; mid-session
 discovery has been inconsistent in testing.
 
@@ -244,11 +244,11 @@ Agent skills are modular, reusable packages of instructions, metadata, and optio
 - **Garmin MCP won't connect** (`/mcp` shows it failed): check
   `~/.garminconnect` exists and `~/lab/garmin_mcp` is where
   `demo/.mcp.json` expects it. For [07], fall back to
-  `../scripts/generate-sample-report.sh` (synthetic data, opens the
+  `../scripts/offline-report.sh` (synthetic data, opens the
   web page). For [02]/[05], talk through what would happen; don't
   fake output.
 - **"Unknown skill"** or the old version runs: you didn't restart.
-  Exit, `../scripts/claude-demo.sh`, same prompt.
+  Exit, `../scripts/claude.sh`, same prompt.
 - **Chromium doesn't open:** the page is `output/weekly-report.html`;
   open it by hand with `chromium output/weekly-report.html`.
 - **Pane closes when running a script:** you typed a leading dot

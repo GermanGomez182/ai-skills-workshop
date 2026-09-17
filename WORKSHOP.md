@@ -16,6 +16,21 @@ $ cat /etc/motd
 
 
 $ _
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ```
 
 
@@ -40,10 +55,6 @@ Same prompt, three times. Watch what changes.
 
 [01] WTF IS A SKILL?
 =====================
-
-```
-$ man skill
-```
 
 ```
 MODEL
@@ -81,25 +92,12 @@ Claude Code, connected to my real Garmin account through an MCP
 server. It can read my activities, sleep, heart rate, stress,
 training readiness. Real data.
 
-Our project for today. Empty, on purpose:
+
 
 ```
-$ cd demo
-$ ../scripts/demo-reset.sh
-$ ls -A
-
-.claude/     <- settings, no skills
-.mcp.json    <- the Garmin connection
-output/      <- empty
-.venv        <- Python, for later
+Create a report about my last week.
 ```
 
-```
-$ ../scripts/claude-demo.sh
-```
-
-(`claude-demo.sh` = Claude Code inside this folder, with this
-folder's settings only. No personal skills, no cheating.)
 
 The prompt. Deliberately vague, like every real request:
 
@@ -212,7 +210,7 @@ what it must never do   -> 5
 Restart Claude so it finds the new Skill:
 
 ```
-$ ../scripts/claude-demo.sh
+$ ../scripts/claude.sh
 ```
 
 
@@ -294,7 +292,7 @@ Same Skill. Version 2. Built for a real weekly report.
 
 ```
 $ ../scripts/install-skill.sh v2
-$ ../scripts/claude-demo.sh
+$ ../scripts/claude.sh
 ```
 
 ```

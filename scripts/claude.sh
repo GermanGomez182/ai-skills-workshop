@@ -12,10 +12,10 @@
 #              folder is empty (built-in skills like dataviz would
 #              otherwise steer the no-Skill run towards charts)
 #   - MCP:     demo/.mcp.json (the real Garmin MCP server)
-#   - Rules:   below, plus scripts/only-our-skill.sh
+#   - Rules:   below, plus scripts/skill-guard.sh
 # Extra arguments are passed through to claude (e.g. -p "...").
 if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
-  echo "[!!] don't source this (no leading dot), run it: scripts/claude-demo.sh" >&2
+  echo "[!!] don't source this (no leading dot), run it: scripts/claude.sh" >&2
   return 1
 fi
 
@@ -54,7 +54,7 @@ SETTINGS="$(cat <<JSON
       {
         "matcher": "Skill",
         "hooks": [
-          { "type": "command", "command": "$ROOT_DIR/scripts/only-our-skill.sh", "timeout": 5 }
+          { "type": "command", "command": "$ROOT_DIR/scripts/skill-guard.sh", "timeout": 5 }
         ]
       }
     ]

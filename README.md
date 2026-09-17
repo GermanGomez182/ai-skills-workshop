@@ -49,11 +49,11 @@ skills-workshop/
 |       +-- scripts/          <- web report, charts, PDF, opener
 |
 +-- scripts/
-|   +-- claude-demo.sh        <- start Claude inside demo/
-|   +-- demo-reset.sh         <- no Skill, empty output/
+|   +-- claude.sh        <- start Claude inside demo/
+|   +-- reset.sh         <- no Skill, empty output/
 |   +-- install-skill.sh      <- install v1 or v2 into demo/
-|   +-- run-demo.sh           <- pre-flight check + the beats
-|   +-- generate-sample-report.sh  <- offline v2 report, synthetic data
+|   +-- preflight.sh           <- pre-flight check + the beats
+|   +-- offline-report.sh  <- offline v2 report, synthetic data
 |
 +-- sample-data/              <- one SYNTHETIC week
 +-- tests/                    <- pytest for the v2 scripts
@@ -66,7 +66,7 @@ from the repo root, a no-skill run found `skill-source/v2/`, read the
 whole Skill and followed it. Started inside `demo/`, it only sees an
 almost empty project, so "no Skill" really means no Skill.
 
-`scripts/claude-demo.sh` also loads only `demo/`'s config: no
+`scripts/claude.sh` also loads only `demo/`'s config: no
 personal skills, no `~/.claude/CLAUDE.md`, no user hooks, and the
 Garmin MCP from `demo/.mcp.json` (the real server at
 `~/lab/garmin_mcp`, tokens in `~/.garminconnect`).
@@ -74,7 +74,7 @@ Garmin MCP from `demo/.mcp.json` (the real server at
 Claude Code's own built-in skills (`dataviz`, `artifact-design`,
 ...) are off as well. While no Skill is installed the launcher
 passes `--disable-slash-commands`; afterwards a PreToolUse hook
-(`scripts/only-our-skill.sh`) allows only the installed
+(`scripts/skill-guard.sh`) allows only the installed
 `garmin-weekly-performance-report`. Otherwise the "no Skill" run
 uses them to hand-build a designed report, which is neither "no
 Skill" nor a fair comparison.
@@ -94,9 +94,9 @@ $ uv venv .venv
 $ uv pip install --python .venv/bin/python -r requirements-dev.txt
 
 $ cd demo
-$ ../scripts/demo-reset.sh
-$ ../scripts/run-demo.sh          # pre-flight + the beats
-$ ../scripts/claude-demo.sh       # Claude, no Skill
+$ ../scripts/reset.sh
+$ ../scripts/preflight.sh          # pre-flight + the beats
+$ ../scripts/claude.sh       # Claude, no Skill
 
 $ ../scripts/install-skill.sh v1  # or type it live
 $ ../scripts/install-skill.sh v2
@@ -106,7 +106,7 @@ Offline, no Garmin, no agent: builds the v2 web report and PDF from
 `sample-data/` and opens the page.
 
 ```
-$ ../scripts/generate-sample-report.sh
+$ ../scripts/offline-report.sh
 ```
 
 That report's text is template sentences, not the model's writing.
