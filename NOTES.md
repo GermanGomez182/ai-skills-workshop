@@ -1,312 +1,141 @@
 # Presenter notes
 
-Open this in a **separate nvim instance, on a monitor you are not
-sharing.** `WORKSHOP.md` is the only file that goes on the shared
-screen. Nothing in this file is safe to mirror.
+Your monitor only. `WORKSHOP.md` is the one file the room sees.
 
-Sections match `WORKSHOP.md`'s `[NN]` markers. Jump with `/\[05\]`.
-
-The whole talk is one idea: **the same prompt, three times.**
+The whole talk is **the same prompt, three times**:
 
 ```
-[02]  no Skill        -> it asks, or guesses big
+[02]  no Skill        -> it guesses big
 [05]  v1, by hand     -> the small table I asked for
-[07]  v2, full Skill  -> web report opens in Chromium (the win)
+[07]  v2, full Skill  -> web report opens in Chromium
 ```
 
-Complexity only goes up. Nobody sees `metrics.md` or a script
-before they have understood a 19-line `SKILL.md`.
-
----
-
-## Setup
-
-- Monitor A (shared): `nvim WORKSHOP.md` + a terminal **inside
-  `demo/`**. Every demo command runs from there.
-- Monitor B (private): `nvim NOTES.md`.
-- Always start Claude with `../scripts/claude.sh`, never plain
-  `claude`. It runs Claude inside `demo/` and passes everything else
-  on the command line: the Garmin MCP from `demo/.mcp.json` (your
-  real server and tokens), pre-approved Garmin calls and scripts (no
-  permission prompts on stage), no personal skills, no
-  `~/.claude/CLAUDE.md`.
-- `demo/` holds only `.mcp.json`, `output/` and the `.venv` link.
-  Settings are *not* written there on purpose: the agent can read
-  anything in its working folder, and a rehearsal read
-  `demo/.claude/settings.json`, saw the allow-list naming
-  `generate_html.py` and `open_in_chrome.sh`, and hand-built an HTML
-  report during the "no Skill" run.
-- **The Artifact tools and the web are denied.** With skills off,
-  the no-skill run reached for the next best thing: it built a page
-  and published it to claude.ai (real health data, external
-  service), which also spent the [07] payoff. `Artifact`,
-  `ArtifactComments`, `ArtifactData`, `WebFetch` and `WebSearch` are
-  denied in the launcher, so nothing leaves the laptop and the web
-  report stays v2's alone.
-- **Built-in skills are off.** Claude Code ships its own
-  (`dataviz`, `artifact-design`, ...) and a rehearsal watched the
-  no-skill run use them to hand-build a designed report -- so "no
-  Skill" wasn't true, and it spent the [07] payoff early. Two
-  measures: while no Skill is installed the launcher passes
-  `--disable-slash-commands`, so the Skill tool doesn't exist at all
-  and not even those descriptions are in context; once one is
-  installed, a PreToolUse hook (`scripts/skill-guard.sh`, outside
-  `demo/` so the agent can't read it) allows only
-  `garmin-weekly-performance-report`. Same rule for all three runs:
-  the only difference between them is our Skill.
-- `demo/.claude/settings.json` also denies reading `../**`, so the
-  agent never asks for `WORKSHOP.md` or these notes on stage.
-- Why `demo/` and not the repo root: Claude Code can't read outside
-  its working folder. From the repo root, a no-skill rehearsal found
-  `skill-source/v2/`, read the whole Skill and followed it -- the
-  "no Skill" run wasn't. From `demo/` it can't see `skill-source/`,
-  `WORKSHOP.md` or these notes (verified 2026-09-16: Read, `cat`
-  and `ls ..` are all blocked).
-
-## Screen layout
-
-Two nvim instances and one terminal, and never two of them at once on
-the shared screen:
+## Open it
 
 ```
-tmux window 1   nvim -S presenter.vim WORKSHOP.md   <- shared
-tmux window 3   cd demo, the terminal               <- shared
-(other monitor) nvim NOTES.md                       <- yours
+nvim -S presenter.vim WORKSHOP.md    # shared screen
+nvim NOTES.md                        # your screen
+cd demo                              # the terminal, shared
 ```
 
-`presenter.vim` folds the talk by `[NN]` section, so exactly one is
-on screen at a time whatever the pane height:
+In the presenter: `Space` next section, `Backspace` back. One section
+on screen at a time; it opens on an index of them all.
 
-- `Space` next section, opened at the top of the screen
-- `Backspace` previous section
-- it opens on an index of all sections, which is a decent title card
+## The three commands
 
-No statusline, no line numbers, no indent guides. If nvim warns about
-a swapfile, it's the same file open in your notes instance; ignore it.
+```
+../scripts/reset.sh              # no Skill, empty output/
+../scripts/claude.sh             # start Claude (clears the screen)
+../scripts/install-skill.sh v2   # the full Skill, for [07]
+```
 
-`claude.sh` clears the screen before starting, so run 2 never shows
-the tail of run 1.
+**Always restart Claude after installing or editing a Skill.** It's
+read from disk, not from the conversation.
+
+Only `claude.sh` starts Claude. Plain `claude` loads your personal
+skills, the built-in ones, Artifact and the whole repo, and the demo
+falls apart. If you see it exploring outside `demo/` or mentioning
+`skill-source`, that's what happened: exit and start again properly.
 
 ## Before the talk
 
 ```
 cd demo
-../scripts/reset.sh     # no skills, empty output/
-../scripts/preflight.sh       # all [ok]
+../scripts/reset.sh
+../scripts/preflight.sh     # all [ok], warms up the Garmin server
 ```
 
-- Commit (or stash) everything. Claude Code shows the agent a short
-  `git status`; uncommitted renames like `skill-source/v2/...` gave
-  a no-skill rehearsal the path to try. The `demo/` boundary blocked
-  it, but don't hand out hints.
-- Close every Chromium window. First Chromium launch after boot is
-  slow: open and close it once.
-- Do the full rehearsal the day before (all three runs). Garmin
-  tokens expire; find out at home, not on stage.
-- Have `skill-source/v1/garmin-weekly-performance-report/SKILL.md`
-  open in a private buffer, in case you want to copy from it.
+Close stray Chromium windows. Rehearse all three runs the day before;
+Garmin tokens expire.
 
----
+## [00]-[01] Agenda, what a Skill is
 
-## [00] AGENDA
+Ten seconds on the agenda. The three layers are a preview, not the
+argument. Let it feel under-explained.
 
-Ten seconds. "Same prompt, three times" is the only thing to say.
+## [02] No Skill
 
-## [01] WTF IS A SKILL?
+Run the prompt and let it go. Don't help it. It takes about a minute
+and dumps a long markdown report nobody asked for, over a week it
+picked itself (Thu-Wed, where v2 uses Mon-Sun). "Which days?" was one
+of the guesses.
 
-A preview, not the argument. Let it feel under-explained; it lands
-again at [10].
+It may ask permission to run date math. Approve it: "now it wants to
+run code to work out what 'last week' means".
 
-## [02] NO SKILL
+End on "What I actually wanted". That's the spec for [04].
 
-Run the prompt and let it go. Don't help it. Whatever it does is
-the point:
+## [03] Anatomy
 
-- asks questions -> "it has to ask, because nobody wrote it down"
-- guesses -> "look how much it decided on its own: which metrics,
-  which days, the format"
+Three things: it's a folder with `SKILL.md` in `.claude/skills/`, the
+frontmatter says `name` and `description`, and the description is
+what gets it picked. Nothing else yet.
 
-Don't count tool calls or time out loud. One sentence is enough:
-"lots of calls, lots of decisions, not what I wanted."
+## [04] Build one by hand
 
-Rehearsal 2026-09-17: 56 s, 16 Garmin calls, and a long markdown
-report dumped straight into the terminal. It picked its own week
-(Thu-Wed, a rolling 7 days) where v2 uses Mon-Sun: point at that,
-"which days?" was one of the guesses. Earlier rehearsals, before the
-Artifact tools were denied, published a designed page to claude.ai
-instead -- if you ever see that, the launcher isn't the one running.
+Type it in the terminal, don't read it off the screen. Narrate one
+line per number: which days, which calls, what shape, missing values,
+the boundary.
 
-It may stop for **permission prompts** on its date math (`python3
--c ...`, shell loops). Approve them; say "and now it wants to run
-code to figure out what 'last week' means".
+A typo in the frontmatter breaks discovery. If typing goes wrong:
+`../scripts/install-skill.sh v1`, then restart.
 
-There are no skills at all in this run, so nothing steers it: what
-you see is the model on its own.
+## [05] Test it, fix it
 
-If the agent says anything about a Skill or `skill-source`, stop
-and check you're in `demo/` and started it with `claude.sh`.
+Same prompt (about 20 s), then "my last 3 days" to show the parameter.
 
-End on the "What I actually wanted" block. That's the spec for [04].
-
-## [03] ANATOMY OF A SKILL
-
-Three ideas, nothing else:
-
-Typically defined by a SKILL.md file containing YAML metadata and Markdown instructions, skills allow agents to load domain-specific procedural knowledge on demand rather than upfront, keeping context windows lean and ensuring consistent, repeatable outputs
-
-
-1. It's a folder with `SKILL.md`, and it has to be in
-   `.claude/skills/`.
-2. Frontmatter: `name` + `description`. The description says WHEN.
-3. The agent only reads name + description until a request
-   matches (progressive disclosure, without saying the words yet).
-
-"We learned that one live": an early version of this repo had the
-Skill in `skills/` at the root. Claude never saw it. Tell it if
-someone laughs; skip it if not.
-
-## [04] BUILD ONE BY HAND
-
-Type it for real in the terminal on Monitor A (not in
-`WORKSHOP.md`). The block in `WORKSHOP.md` is the recap people can
-read while you type; scroll to it after.
-
-Narrate while typing, one line per number:
-
-- description: "this is how it gets picked; name the requests"
-- 1: which days, and the escape hatch for "last 3 days"
-- 2: which calls, and "nothing else" -- that's what keeps it fast
-- 3: the shape
-- 4: never invent a number
-- 5: the boundary
-
-Typos in the frontmatter break discovery. If typing goes badly,
-don't fix it live:
+The fix is the Day column: it prints `2026-09-14` because step 3
+never says what a day looks like. Add one line, restart, rerun:
 
 ```
-../scripts/install-skill.sh v1
-```
-
-Then exit Claude and restart with `../scripts/claude.sh`.
-**Always restart after changing what's installed**; mid-session
-discovery has been inconsistent in testing.
-
-## [05] TEST IT, FIX IT
-
-Same prompt, then the "last 3 days" one. Point at the difference
-qualitatively (no questions, small, exact shape).
-
-Rehearsal 2026-09-16: last week took about 23 s and 14 calls; last
-3 days about 18 s and 6 calls. Both printed exactly the table.
-
-**The fix: the Day column.** Don't hunt for a dramatic bug -- there
-isn't one. Checked 2026-09-17: the same prompt twice gives a
-byte-identical table, which is the good news you just sold. The
-thing worth fixing is right there in it:
-
-```
-| Day        | Resting HR | Sleep score |
-| 2026-09-14 | 56         | 58          |
-```
-
-You asked for "one line per day" and got an ISO date. Nobody reads
-`2026-09-14` as Saturday. Step 3 never said what that column looks
-like, so the model decided for you. That is the whole lesson: what
-you don't write down, it picks.
-
-On stage, 30 seconds:
-
-1. Point at the column in the run already on screen. "Did I choose
-   that? No. I said one line per day, and nothing else."
-2. Add one line to step 3:
-
-   ```
    Day column: weekday and day number, like "Mon 14".
-   ```
+```
 
-3. Exit Claude, `../scripts/claude.sh`, same prompt.
-4. `Mon 14`, `Tue 15`, `Wed 16`.
+Same prompt twice gives the same table, so don't promise a random
+bug. If the run does go wrong on its own, fix that instead.
 
-The restart carries its own lesson: the Skill is read from disk, not
-from the conversation.
+## [06] MCP vs Skill
 
-Equally visible alternatives, pick one: `Sort newest day first.` or
-`Mark sleep scores below 60 with (!).` If the run goes wrong on its
-own (wrong days, extra text), use that instead -- a real bug beats a
-planned one.
+They just watched the Skill use 2 of the MCP's tools and ignore the
+rest. "Isn't a Skill just a big prompt?" - a prompt is one message you
+retype; a Skill is a file that gets picked automatically, brings
+references and scripts, and is versioned. [07] shows that.
 
-## [06] MCP VS SKILL
-
-Now it's concrete: they just watched the Skill pick 2 of the MCP's
-tools and ignore the rest. Point back at step 2 of the file.
-
-If someone asks "isn't a Skill just a big prompt?": a prompt is one
-message you retype. A Skill is a file that's picked automatically,
-can bring references and scripts, and is versioned. [07] shows the
-"references and scripts" part.
-
-## [07] LEVEL UP
+## [07] Level up
 
 `install-skill.sh v2` replaces v1 in the same folder: same name,
-version 2. Don't install both side by side; they'd both match the
-prompt and the agent could pick either.
+version 2. Never both at once.
 
-Show the tree, one sentence per file, then run. It takes about
-3 minutes (rehearsal 2026-09-17: 179 s, 22 Garmin calls, no
-permission prompts). While it runs, talk through [08]'s first bullet
-(references), then come back when Chromium opens.
+Show the tree, one line per file, then run. About 3 minutes. When
+Chromium opens: the big number, hover a chart, hover a yellow `!` in
+the notable-days grid, then the DATA / OBSERVATION / INTERPRETATION
+cards.
 
-When the page opens, give it room:
+The PDF ("Now give me that as a PDF, with charts.") only if asked.
 
-- the big number, then scroll
-- hover a chart
-- the notable days grid: hover a yellow `!`
-- the DATA / OBSERVATION / INTERPRETATION cards
+## [08] Why the extra files
 
-The PDF still exists ("Now give me that as a PDF, with charts."),
-but skip it unless someone asks.
+Both stories on screen are real:
 
-## [08] WHY THE EXTRA FILES
+- The model wrote "Saturday" for runs the data put on Sunday. The
+  chart was right. The fix was one line in
+  `interpretation-guidelines.md`.
+- 11 minutes -> 3: the first version fetched 4 weeks of per-day data
+  (85 calls). Asking for 7 days and Garmin's summary tools: 22 calls.
 
-The rehearsal stories on screen are real (2026-09-16):
+## [09]-[10] Patterns, the point
 
-- Saturday/Sunday: the model's prose said the runs were on
-  "Saturday, Sep 13"; the data and chart said Sunday. The new check
-  is the last bullet of `interpretation-guidelines.md`.
-- Eleven minutes -> three: the first version of the full Skill
-  fetched 4 weeks of per-day data (85 calls, ~150 KB of raw sleep
-  data per night). Asking for 7 days and Garmin's summary tools:
-  22 calls, about 3 minutes including building and opening the web
-  page.
-
-Keep numbers to those two sentences. If someone wants details:
-`skill-source/v2/.../SKILL.md`, "Data to retrieve".
-
-## [09] OTHER PATTERNS
-
-Speed round. Cut this first if you're late.
-
-## [10] THE POINT
-
-
-Agent skills are modular, reusable packages of instructions, metadata, and optional resources (such as scripts or templates) that give AI agents specialized capabilities for specific tasks. 
----
+Speed round; cut this first if you're late. Then let the closing
+lines sit. `$ exit` is the ending.
 
 ## If something breaks
 
-- **Garmin MCP won't connect** (`/mcp` shows it failed): check
-  `~/.garminconnect` exists and `~/lab/garmin_mcp` is where
-  `demo/.mcp.json` expects it. For [07], fall back to
-  `../scripts/offline-report.sh` (synthetic data, opens the
-  web page). For [02]/[05], talk through what would happen; don't
-  fake output.
+- **MCP won't connect** (`/mcp`): check `~/.garminconnect` and
+  `~/lab/garmin_mcp`. For [07] fall back to
+  `../scripts/offline-report.sh` (synthetic data, opens the page).
 - **"Unknown skill"** or the old version runs: you didn't restart.
-  Exit, `../scripts/claude.sh`, same prompt.
-- **Chromium doesn't open:** the page is `output/weekly-report.html`;
-  open it by hand with `chromium output/weekly-report.html`.
-- **Pane closes when running a script:** you typed a leading dot
-  (`. ../scripts/...`). The scripts refuse to be sourced now, but a
-  shell that sourced one earlier may still have `set -e` on. Open a
-  new pane.
-- **Running long:** cut [09], then the live fix in [05], then
-  shorten the page tour in [07].
+- **Chromium doesn't open:** `chromium output/weekly-report.html`.
+- **The pane closes:** you sourced a script with a leading dot. Open
+  a new pane.
+- **Running long:** cut [09], then the fix in [05], then shorten the
+  page tour.
