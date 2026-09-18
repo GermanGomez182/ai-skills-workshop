@@ -81,6 +81,10 @@ if [ ! -d "$SKILL_DIR" ]; then
   NO_SKILLS=(--disable-slash-commands)
 fi
 
+# One run per screen: the previous session's scrollback stays out of
+# the shared screen.
+clear
+
 exec claude \
   --setting-sources project,local \
   --settings "$SETTINGS" \

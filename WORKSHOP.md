@@ -53,6 +53,26 @@ $ _
 Same prompt, three times. Watch what changes.
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 [01] WTF IS A SKILL?
 =====================
 
@@ -83,6 +103,28 @@ Prompts solve a task.
 Skills encode how your team solves
 a class of tasks.
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 [02] NO SKILL
@@ -117,6 +159,16 @@ Resting heart rate and sleep score.
 One line per day.
 That's it.
 ```
+
+
+
+
+
+
+
+
+
+
 
 
 [03] ANATOMY OF A SKILL
@@ -361,7 +413,7 @@ INTERPRETATION  coincided with the longest run of the week
 
 "Coincided with". Never "caused by".
 
-**Skills are code. Code has performance bugs.** The first version
+**Skills are code. Code kas performance bugs.** The first version
 of this Skill asked for four weeks of history: about eleven minutes
 per run. One paragraph changed it to one week: about three.
 

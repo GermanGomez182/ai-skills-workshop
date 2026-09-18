@@ -63,6 +63,30 @@ before they have understood a 19-line `SKILL.md`.
   `WORKSHOP.md` or these notes (verified 2026-09-16: Read, `cat`
   and `ls ..` are all blocked).
 
+## Screen layout
+
+Two nvim instances and one terminal, and never two of them at once on
+the shared screen:
+
+```
+tmux window 1   nvim -S presenter.vim WORKSHOP.md   <- shared
+tmux window 3   cd demo, the terminal               <- shared
+(other monitor) nvim NOTES.md                       <- yours
+```
+
+`presenter.vim` folds the talk by `[NN]` section, so exactly one is
+on screen at a time whatever the pane height:
+
+- `Space` next section, opened at the top of the screen
+- `Backspace` previous section
+- it opens on an index of all sections, which is a decent title card
+
+No statusline, no line numbers, no indent guides. If nvim warns about
+a swapfile, it's the same file open in your notes instance; ignore it.
+
+`claude.sh` clears the screen before starting, so run 2 never shows
+the tail of run 1.
+
 ## Before the talk
 
 ```
