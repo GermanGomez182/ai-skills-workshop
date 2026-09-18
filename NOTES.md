@@ -19,7 +19,8 @@ cd demo                              # the terminal, shared
 ```
 
 In the presenter: `Space` next section, `Backspace` back. One section
-on screen at a time; it opens on an index of them all.
+on screen at a time; it opens on the title, and `Backspace` on [00]
+goes back to it.
 
 ## The three commands
 

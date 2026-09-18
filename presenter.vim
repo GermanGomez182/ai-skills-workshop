@@ -45,8 +45,8 @@ function! s:Section(dir) abort
   normal! zM
   if a:dir > 0
     call search('^\[\d\d\]', 'W')
-  else
-    call search('^\[\d\d\]', 'bW')
+  elseif !search('^\[\d\d\]', 'bW')
+    normal! gg
   endif
   normal! zv
   normal! zt
@@ -56,6 +56,8 @@ nnoremap <silent> <Space> :call <SID>Section(1)<CR>
 nnoremap <silent> <BS> :call <SID>Section(-1)<CR>
 nnoremap <silent> <Home> :call <SID>Section(-1)<CR>
 
-" Start closed, on the title screen.
+" Start on the title screen, every section closed.
 normal! zM
 normal! gg
+normal! zv
+normal! zt
