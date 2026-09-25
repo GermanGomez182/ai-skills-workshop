@@ -31,10 +31,7 @@ terminal.
 ╚═╝  ╚═╝╚═╝    ╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚══════╝
 ```
 
-teaching agents how we work
-
-**Germán Nicolás Gómez**
-AI Solutions Architect Lead
+designing reliable AI workflows
 
 ---
 
@@ -90,13 +87,13 @@ It asks, or it guesses big.
 
 ```
 .claude/skills/
-└── garmin-weekly-performance-report/
+└── weekly-performance-report/
     └── SKILL.md
 ```
 
 ```
 ---
-name: ...             <- what it's called
+name: ...             <- what it is called
 description: ...      <- WHEN to use it
 ---
 ...                   <- HOW to do the job
@@ -148,7 +145,7 @@ MCP gives the agent tools. Skills teach the agent how we use them.
 ## Level up
 
 ```
-garmin-weekly-performance-report/
+weekly-performance-report/
 ├── SKILL.md
 ├── metrics.md
 ├── report-template.md
@@ -168,7 +165,7 @@ THE SCRIPT draws     every number, chart, flagged day
 ```
 
 ```
-DATA            HRV 39 ms, Garmin average 44 ms
+DATA            HRV 39 ms, weekly baseline 44 ms
 OBSERVATION     11% below average that night
 INTERPRETATION  coincided with the longest run
 ```

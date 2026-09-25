@@ -5,7 +5,7 @@ from conftest import REPO_ROOT
 
 PRESENTER = REPO_ROOT / "presenter.vim"
 WORKSHOP = REPO_ROOT / "WORKSHOP.md"
-TAGLINE = "teaching agents how we work"
+TAGLINE = "designing reliable AI workflows"
 SPACE = "\\<Space>"
 BACKSPACE = "\\<BS>"
 

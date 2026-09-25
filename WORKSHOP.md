@@ -8,11 +8,7 @@ $ cat /etc/motd
 ██║  ██║██║    ███████║██║  ██╗██║███████╗███████╗███████║
 ╚═╝  ╚═╝╚═╝    ╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚══════╝
 
-              teaching agents how we work
-
-
-  Germán Nicolás Gómez
-  AI Solutions Architect Lead
+              designing reliable AI workflows
 
 
 $ _
@@ -130,9 +126,9 @@ a class of tasks.
 [02] NO SKILL
 ===============
 
-Claude Code, connected to my real Garmin account through an MCP
-server. It can read my activities, sleep, heart rate, stress,
-training readiness. Real data.
+An agent connected to a fitness-data service through an MCP server.
+It can read activities, sleep, heart rate, stress, and training
+readiness from a supplied dataset.
 
 The prompt. Deliberately vague, like every real request:
 
@@ -174,11 +170,11 @@ That's it.
 [03] ANATOMY OF A SKILL
 =========================
 
-A Skill is a folder with a markdown file in it.
+A Skill is a folder containing a markdown file.
 
 ```
 .claude/skills/
-└── garmin-weekly-performance-report/
+└── weekly-performance-report/
     └── SKILL.md
 ```
 
@@ -189,7 +185,7 @@ folder with markdown in it. (We learned that one live.)
 
 ```
 ---
-name: ...             <- what it's called
+name: ...             <- what it is called
 description: ...      <- WHEN to use it
 ---
 
@@ -219,17 +215,17 @@ in `.claude/skills/<name>/`, next to the project it serves:
 
 ```
 $ cd demo
-$ mkdir -p .claude/skills/garmin-weekly-performance-report
-$ nvim .claude/skills/garmin-weekly-performance-report/SKILL.md
+$ mkdir -p .claude/skills/weekly-performance-report
+$ nvim .claude/skills/weekly-performance-report/SKILL.md
 ```
 
 ```
 ---
-name: garmin-weekly-performance-report
-description: Garmin health report with resting heart rate and sleep score per day. Use when the user asks for a report about their last week, their recent days, their sleep or their heart rate.
+name: weekly-performance-report
+description: Weekly performance report with resting heart rate and sleep score per day. Use when the user asks for a report about a recent period, sleep, or heart rate.
 ---
 
-# Garmin report
+# Weekly performance report
 
 1. Period: the last 7 days, ending yesterday. If the user asks for
    a number of days ("my last 3 days"), use that instead.
@@ -320,7 +316,7 @@ $ diff mcp skill
 Look at what just happened:
 
 ```
-GARMIN MCP                      SKILL
+MCP / DATA SERVICE              SKILL
 ==========                      =====
 
 get_stats                       which days
@@ -358,7 +354,7 @@ $ ../scripts/claude.sh
 ```
 
 ```
-.claude/skills/garmin-weekly-performance-report/
+.claude/skills/weekly-performance-report/
 ├── SKILL.md                      <- same idea as yours, longer
 ├── metrics.md                    <- what counts as "notable"
 ├── report-template.md            <- the sections, in order
@@ -406,7 +402,7 @@ them on Sunday. The chart was right. The fix was one new check in
 **Health data needs manners.** Say what happened, not why:
 
 ```
-DATA            HRV 39 ms, Garmin average 44 ms
+DATA            HRV 39 ms, weekly baseline 44 ms
 OBSERVATION     11% below average that night
 INTERPRETATION  coincided with the longest run of the week
 ```
