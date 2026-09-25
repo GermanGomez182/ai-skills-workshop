@@ -39,18 +39,19 @@ designing reliable AI workflows
 
 ```
 00:00   What Is a Skill?             5 min
-00:05   No Skill                     5 min
+00:05   Without a Skill              5 min
 00:10   Anatomy of a Skill           5 min
 00:15   Build one by hand           10 min
 00:25   Test it, fix it              5 min
 00:30   MCP vs Skill                 5 min
-00:35   Level up                    10 min
+00:35   Advanced Patterns           10 min
 00:45   Why the extra files          5 min
 00:50   Other patterns               5 min
-00:55   Q&A
+00:55   Questions and Discussion
 ```
 
-Same prompt, three times.
+The same prompt is evaluated at three stages to demonstrate the effect
+of added guidance.
 
 ---
 
@@ -67,7 +68,7 @@ tasks.
 
 ---
 
-## No Skill
+## Without a Skill
 
 ```
 Create a report about my last week.
@@ -79,7 +80,8 @@ Table? Essay? File?
 What is it allowed to say about my health?
 ```
 
-It asks, or it guesses big.
+It must either request clarification or make assumptions, often beyond
+the intended scope.
 
 ---
 
@@ -153,7 +155,7 @@ weekly-performance-report/
 └── scripts/   <- web report, charts, PDF
 ```
 
-Same prompt. Third time. The web report opens.
+The same prompt, now with the complete Skill. The web report opens.
 
 ---
 
@@ -178,7 +180,7 @@ Skills are code. Code has performance bugs: 11 minutes -> 3.
 
 ```
 Developer: "Deploy this."
-AI:        "Great. I have 17 questions."
+AI:        "I need clarification on 17 points."
 
 Developer: "Deploy this."   (with a Skill)
 AI:        "I know the drill."
@@ -188,9 +190,9 @@ incident-response · pull-request-review · release-readiness
 
 ---
 
-# Don't teach the AI
+# Encode recurring instructions once
 
-the same thing twice.
+and reuse them consistently.
 
 ```
 $ exit

@@ -35,18 +35,19 @@ $ _
 
 ```
 00:00   What Is a Skill?             5 min
-00:05   No Skill                     5 min
+00:05   Without a Skill              5 min
 00:10   Anatomy of a Skill           5 min
 00:15   Build one by hand           10 min
 00:25   Test it, fix it              5 min
 00:30   MCP vs Skill                 5 min
-00:35   Level up                    10 min
+00:35   Advanced Patterns           10 min
 00:45   Why the extra files          5 min
 00:50   Other patterns               5 min
-00:55   Q&A
+00:55   Questions and Discussion
 ```
 
-Same prompt, three times. Watch what changes.
+The same prompt is evaluated at three stages to demonstrate the effect
+of added guidance.
 
 
 
@@ -178,8 +179,8 @@ A Skill is a folder containing a markdown file.
     └── SKILL.md
 ```
 
-It has to live in `.claude/skills/`. Anywhere else, it's just a
-folder with markdown in it. (We learned that one live.)
+The Skill must live in `.claude/skills/`; otherwise, it is not
+available for project-level discovery.
 
 `SKILL.md` has two parts:
 
@@ -290,8 +291,8 @@ Look at the Day column:
 | 2026-09-14 | 56         | 58          |
 ```
 
-I never said what a day looks like, so it chose. What you don't
-write down, the model decides.
+The request does not define the structure of a day, so the model must
+choose one. Details that are not specified may be inferred incorrectly.
 
 One line into step 3, restart, run it again:
 
@@ -343,7 +344,7 @@ how we use those tools.
 ```
 
 
-[07] LEVEL UP
+[07] ADVANCED PATTERNS
 ===============
 
 Same Skill. Version 2. Built for a real weekly report.
@@ -379,7 +380,8 @@ $ _
 [08] WHY THE EXTRA FILES
 ==========================
 
-Same shape as the v1 you just watched me type. It just grew.
+It follows the same structure as the initial Skill, with additional
+guidance and supporting files.
 
 **References, not one giant file.** `SKILL.md` stays short and
 points at the other files. The agent reads them when it needs them.
@@ -391,8 +393,8 @@ THE MODEL writes     the summary, what to watch
 THE SCRIPT draws     every number, chart, flagged day
 ```
 
-The model can't fudge a chart, and the page looks the same every
-week.
+The chart is generated from the data, which improves numerical
+consistency and keeps the presentation stable.
 
 It also makes mistakes visible. In rehearsal the model wrote that
 my runs were on "Saturday". The chart, drawn from the data, put
@@ -435,7 +437,7 @@ Speed round.
 WITHOUT SKILL
 
 Developer: "Deploy this."
-AI:        "Great. I have 17 questions."
+AI:        "I need clarification on 17 points."
 
 
 WITH aws-production-deployment/
@@ -485,8 +487,8 @@ MCP gives the agent access.
 Skills give the agent procedure.
 
 
-Don't teach the AI
-the same thing twice.
+Encode recurring instructions once
+and reuse them consistently.
 ```
 
 ```
