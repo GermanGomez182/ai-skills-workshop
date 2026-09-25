@@ -38,7 +38,7 @@ designing reliable AI workflows
 ## Agenda
 
 ```
-00:00   WTF is a Skill?              5 min
+00:00   What Is a Skill?             5 min
 00:05   No Skill                     5 min
 00:10   Anatomy of a Skill           5 min
 00:15   Build one by hand           10 min
@@ -54,7 +54,7 @@ Same prompt, three times.
 
 ---
 
-## WTF is a Skill?
+## What Is a Skill?
 
 ```
 MODEL        knows things

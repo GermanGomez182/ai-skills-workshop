@@ -34,7 +34,7 @@ $ _
 ===========
 
 ```
-00:00   WTF is a Skill?              5 min
+00:00   What Is a Skill?             5 min
 00:05   No Skill                     5 min
 00:10   Anatomy of a Skill           5 min
 00:15   Build one by hand           10 min
@@ -69,7 +69,7 @@ Same prompt, three times. Watch what changes.
 
 
 
-[01] WTF IS A SKILL?
+[01] WHAT IS A SKILL?
 =====================
 
 ```
